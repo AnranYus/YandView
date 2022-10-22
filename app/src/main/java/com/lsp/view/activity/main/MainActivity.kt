@@ -60,7 +60,6 @@ class MainActivity : BaseActivity() {
         val appbar = findViewById<AppBarLayout>(R.id.appbar)
         val nowHeight = appbar.layoutParams.height
         appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
-        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         //到达底部，加载更多数据
         adapter.setLoadMoreListener(object : PostAdapter.OnLoadMoreListener {
