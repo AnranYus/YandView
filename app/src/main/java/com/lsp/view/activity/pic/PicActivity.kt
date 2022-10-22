@@ -211,8 +211,8 @@ class PicActivity : BaseActivity() {
                 if (e != null) {
                     e.printStackTrace()
                 }
-                val pb = findViewById<ProgressBar>(R.id.pb)
-                Snackbar.make(pb, R.string.toast_load_fail, Snackbar.LENGTH_LONG).setAction(R.string.button_check) {
+                val back = findViewById<ImageView>(R.id.back)
+                Snackbar.make(back, R.string.toast_load_fail, Snackbar.LENGTH_LONG).setAction(R.string.button_check) {
                     AlertDialog.Builder(this@PicActivity).apply {
                         setTitle("Log")
                         if (e != null) {
@@ -224,7 +224,6 @@ class PicActivity : BaseActivity() {
                     }
                 }.show()
 
-                pb.visibility = View.INVISIBLE
                 return false
 
             }
@@ -236,8 +235,6 @@ class PicActivity : BaseActivity() {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
             ): Boolean {
-                val pb = findViewById<ProgressBar>(R.id.pb)
-                pb.visibility = View.INVISIBLE
                 return false
 
 

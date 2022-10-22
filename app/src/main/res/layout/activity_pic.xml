@@ -140,11 +140,7 @@
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-    <ProgressBar
-        android:layout_gravity="center"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/pb"/>
+
 <com.github.chrisbanes.photoview.PhotoView
     android:background="#000"
     android:layout_width="match_parent"
