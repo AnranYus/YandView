@@ -142,7 +142,7 @@ class PicActivity : BaseActivity() {
                 .alpha(0f)
                 .setDuration(shortAnnotationDuration.toLong())
                 .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         photoView.visibility = View.GONE
                     }
                 })
@@ -185,7 +185,7 @@ class PicActivity : BaseActivity() {
                 .alpha(0f)
                 .setDuration(shortAnnotationDuration.toLong())
                 .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         photoView.visibility = View.GONE
                     }
                 })

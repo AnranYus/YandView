@@ -206,7 +206,7 @@ class MainActivity : BaseActivity() {
             .alpha(0f)
             .setDuration(shortAnnotationDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     searchBar.visibility = View.GONE
                 }
             })
