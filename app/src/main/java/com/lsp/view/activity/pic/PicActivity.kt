@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -65,10 +67,13 @@ class PicActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_pic)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         image = findViewById(R.id.titleImage)
         shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
@@ -163,6 +168,11 @@ class PicActivity : BaseActivity() {
                 ctrl.visibility = View.GONE
             else
                 ctrl.visibility = View.VISIBLE
+        }
+
+        val back = findViewById<ImageView>(R.id.back)
+        back.setOnClickListener {
+            finish()
         }
 
     }
