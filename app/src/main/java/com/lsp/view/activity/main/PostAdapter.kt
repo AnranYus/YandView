@@ -106,7 +106,16 @@ class PostAdapter(val context: Context, private var postYandList: ArrayList<Post
 
         val source: String = post.sample_url
 
-        holder.picImage.layoutParams.height = postYandList[position].sample_height/2
+        val height = postYandList[position].sample_height
+        val width = postYandList[position].sample_width
+
+        //图片过长则缩减高度以保证显示完整
+        if (width*0.75 > height){
+            holder.picImage.layoutParams.height = height / 2
+        }else {
+            holder.picImage.layoutParams.height = height
+        }
+
 
         val glideUrl = GlideUrl(
             source,
