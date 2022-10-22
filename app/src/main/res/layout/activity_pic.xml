@@ -118,22 +118,27 @@
             android:orientation="vertical">
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
+                android:elevation="5dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/ic_twotone_arrow_downward_24"
                 android:id="@+id/download"/>
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:elevation="5dp"
+                android:layout_margin="10dp"
                 android:src="@drawable/ic_twotone_share_24"
                 android:id="@+id/share"/>
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:fabCustomSize="80dp"
+            android:layout_margin="10dp"
             android:src="@drawable/ic_baseline_add_24"
+            android:elevation="5dp"
             android:id="@+id/float_btn"/>
 
     </LinearLayout>
