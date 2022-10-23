@@ -31,7 +31,6 @@ import com.lsp.view.util.CallBackStatus
 
 
 class MainActivity : BaseActivity() {
-    private var searchTag: String? = null
     private lateinit var search: EditText
     private var shortAnnotationDuration: Int = 0
     private var nowPage = 1
@@ -104,14 +103,14 @@ class MainActivity : BaseActivity() {
 
         search = findViewById(R.id.search)
         //快捷搜索tag 来自PicActivity
-        searchTag = intent.getStringExtra("searchTag")
+        val searchTag = intent.getStringExtra("searchTag")
         if (searchTag != null) {
             //tag按钮搜索
             this.search.setText(searchTag)
-            searchAction(searchTag)
+            action(searchTag)
         } else {
             //初次启动
-            loadData( tags,1,ISADDDATA)
+            action("")
         }
 
 
@@ -124,9 +123,8 @@ class MainActivity : BaseActivity() {
 
         search.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchAction(search.text.toString())
-                searchTag = search.text.toString()
-                search.isFocusable = false
+                val searchTag = search.text.toString()
+                action(searchTag)
             }
             return@setOnEditorActionListener false
         }
@@ -135,7 +133,7 @@ class MainActivity : BaseActivity() {
         //刷新
         swipeRefreshLayout.setOnRefreshListener {
             nowPage = 1
-            loadData( searchTag, nowPage, ISREFRESH)
+            loadData(tags, nowPage, ISREFRESH)
         }
 
         //侧边栏
@@ -153,7 +151,6 @@ class MainActivity : BaseActivity() {
                 R.id.photo -> {
                     loadData( null, 1, ISREFRESH)
                     drawerLayout.closeDrawers()
-                    searchTag = ""
                     true
                 }
                 //设置
@@ -182,14 +179,16 @@ class MainActivity : BaseActivity() {
         //加载源改变
         val configSp = getSharedPreferences("com.lsper.view_preferences", 0)
         if (nowSourceName != configSp.getString("sourceName",null)){
-            loadData(tags,1,ISREFRESH)
+            action("")
             nowSourceName = configSp.getString("sourceName",null)
         }
 
         if (safeMode != configSp.getBoolean("safe_mode",true)){
-            loadData(tags,1,ISREFRESH)
+            action("")
             safeMode = configSp.getBoolean("safe_mode",true)
         }
+
+        search.setText("")
 
     }
 
@@ -235,8 +234,7 @@ class MainActivity : BaseActivity() {
             }
             R.id.search_nav -> {
                 if (barShow) {
-                    searchTag = search.text.toString()
-                    searchAction(searchTag)
+                    action(search.text.toString())
                     hideIm()
 
                 }
@@ -253,21 +251,20 @@ class MainActivity : BaseActivity() {
     private fun hideIm() {
         val controller = ViewCompat.getWindowInsetsController(window.decorView)
         controller?.hide(ime())
-        search.isFocusable = false
     }
 
-    //执行搜索
-    private fun searchAction(tags: String?) {
-        var tag = tags
+    //执行加载
+    private fun action(searchTag :String?) {
+        var tag = searchTag
         var isNum = true
         try {
-            tags?.toInt()
+            tag?.toInt()
         }catch (e:NumberFormatException){
             isNum = false
         }
 
         if (isNum){
-            tag = "id:"+tags
+            tag = "id:"+searchTag
         }
 
         loadData(tag, 1, ISREFRESH)
