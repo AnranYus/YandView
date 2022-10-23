@@ -34,7 +34,16 @@
                     android:layout_height="?attr/actionBarSize"
                     app:menu="@menu/toolbar_menu"
                     android:id="@+id/toolbar"
-                    />
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20sp"
+                        android:id="@+id/search"
+                        android:imeOptions="actionSearch"
+                        android:singleLine="true"
+                        android:visibility="gone" />
+                </androidx.appcompat.widget.Toolbar>
 
             </com.google.android.material.appbar.AppBarLayout>
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -52,54 +61,6 @@
         </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-    <LinearLayout
-        android:layout_marginTop="?attr/actionBarSize"
-        android:paddingTop="40dp"
-        android:visibility="gone"
-        android:id="@+id/search_bar"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="0dp"
-            android:layout_weight="20"
-            android:elevation="15dp"
-            app:cardCornerRadius="3dp"
-            android:id="@+id/editCard"
-            style="?attr/materialCardViewElevatedStyle"
-            android:layout_height="50dp"
-            >
-            <EditText
-
-                android:background="@null"
-                android:hint="搜索..."
-                android:imeOptions="actionSearch"
-                android:singleLine="true"
-                android:paddingStart="10dp"
-                android:textSize="15sp"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/search"/>
-            <View
-                android:id="@+id/close"
-                android:layout_gravity="end"
-                android:layout_width="35dp"
-                android:layout_margin="10dp"
-                android:layout_height="35dp"
-                app:tint="?attr/colorPrimary"
-                android:background="@drawable/ic_baseline_close_24"/>
-        </com.google.android.material.card.MaterialCardView>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-    </LinearLayout>
 
 </RelativeLayout>
     <com.google.android.material.navigation.NavigationView

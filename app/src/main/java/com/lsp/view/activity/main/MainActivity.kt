@@ -33,7 +33,6 @@ import com.lsp.view.util.CallBackStatus
 class MainActivity : BaseActivity() {
     private var searchTag: String? = null
     private lateinit var search: EditText
-    private lateinit var searchBar: LinearLayout
     private var shortAnnotationDuration: Int = 0
     private var nowPage = 1
     private val adapter: PostAdapter = PostAdapter(this, ArrayList())
@@ -49,13 +48,14 @@ class MainActivity : BaseActivity() {
     private var tags: String? = ""
     private val ISREFRESH = 1
     private val ISADDDATA = 0
+    private lateinit var toolbar:Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val appbar = findViewById<AppBarLayout>(R.id.appbar)
         val nowHeight = appbar.layoutParams.height
@@ -114,25 +114,19 @@ class MainActivity : BaseActivity() {
             loadData( tags,1,ISADDDATA)
         }
 
-        val close = findViewById<View>(R.id.close)
 
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
         }
 
-        searchBar = findViewById(R.id.search_bar)
         shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-        close.setOnClickListener {
-            hiddenSearchBar()
-            hideIm()
-        }
 
         search.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchAction(search.text.toString())
                 searchTag = search.text.toString()
-                hiddenSearchBar()
+                search.isFocusable = false
             }
             return@setOnEditorActionListener false
         }
@@ -201,12 +195,13 @@ class MainActivity : BaseActivity() {
 
     //隐藏搜索栏
     private fun hiddenSearchBar() {
-        searchBar.animate()
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
+        search.animate()
             .alpha(0f)
             .setDuration(shortAnnotationDuration.toLong())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    searchBar.visibility = View.GONE
+                    search.visibility = View.GONE
                 }
             })
         hideIm()
@@ -216,7 +211,8 @@ class MainActivity : BaseActivity() {
 
     //现实搜索栏
     private fun showSearchBar() {
-        searchBar.apply {
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24)
+        search.apply {
             alpha = 0f
             visibility = View.VISIBLE
             animate()
@@ -230,19 +226,22 @@ class MainActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
-                drawerLayout.openDrawer(GravityCompat.START)
+                if (barShow){
+                    hiddenSearchBar()
+                }else {
+                    val drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
+                    drawerLayout.openDrawer(GravityCompat.START)
+                }
             }
             R.id.search_nav -> {
                 if (barShow) {
                     searchTag = search.text.toString()
                     searchAction(searchTag)
-                    hiddenSearchBar()
-
+                    hideIm()
 
                 }
 
-                if (searchBar.visibility == View.GONE) {
+                if (search.visibility == View.GONE) {
                     showSearchBar()
                 }
             }
@@ -254,6 +253,7 @@ class MainActivity : BaseActivity() {
     private fun hideIm() {
         val controller = ViewCompat.getWindowInsetsController(window.decorView)
         controller?.hide(ime())
+        search.isFocusable = false
     }
 
     //执行搜索
