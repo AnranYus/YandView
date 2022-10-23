@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -47,9 +48,12 @@ object Util {
             shareIntent.putExtra(Intent.EXTRA_STREAM,imageUri)
 
             val intent = Intent.createChooser(shareIntent,R.string.title_share.toString())
-
-            val resInfoList: List<ResolveInfo> = context.packageManager
-                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            val resInfoList:List<ResolveInfo> = if (Build.VERSION.SDK_INT<33) {
+                context.packageManager
+                    .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            }else{
+                context.packageManager.queryIntentActivities(intent,PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()))
+            }
 
             for (resolveInfo in resInfoList) {
                 val packageName = resolveInfo.activityInfo.packageName
