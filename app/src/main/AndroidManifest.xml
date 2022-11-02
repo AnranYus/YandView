@@ -36,7 +36,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.login.LoginActivity" />
         <activity
             android:name=".activity.pic.PicActivity"
             android:configChanges="uiMode"/>
