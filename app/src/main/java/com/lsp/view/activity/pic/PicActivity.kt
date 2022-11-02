@@ -49,14 +49,13 @@ class PicActivity : BaseActivity() {
 
     companion object{
         fun actionStartActivity(context: Context,id:String,sample_url:String,file_url:String,tags:String,
-                                file_ext:String,author:String,file_size:String,md5:String,sample_height:Int,sample_width:Int){
+                                file_ext:String,file_size:String,md5:String,sample_height:Int,sample_width:Int){
             val intent=Intent(context,PicActivity::class.java)
             intent.putExtra("id", id)
             intent.putExtra("sample_url", sample_url)
             intent.putExtra("file_url", file_url)
             intent.putExtra("tags", tags)
             intent.putExtra("file_ext", file_ext)
-            intent.putExtra("author", author)
             intent.putExtra("file_size", file_size)
             intent.putExtra("md5", md5)
             intent.putExtra("sample_height",sample_height)
@@ -91,11 +90,6 @@ class PicActivity : BaseActivity() {
             loadTags(tags, "tags")
         }
 
-
-        val author = intent.getStringExtra("author")
-        if (author != null) {
-            loadTags(author, "author")
-        }
         val file_size = intent.getStringExtra("file_size")
         if (file_size != null) {
             loadTags(file_size, "size")
@@ -289,15 +283,6 @@ class PicActivity : BaseActivity() {
 
                 })
                 tagRecyclerView.adapter = adapter
-            }
-            "author" -> {
-                authorList.add(Author("Author"))
-                val authorRecyclerView =
-                    findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.authorRecyclerView)
-                authorRecyclerView.layoutManager = layoutManager()
-                authorList.add(Author(tags))
-                val adapter = AuthorAdapter(authorList)
-                authorRecyclerView.adapter = adapter
             }
             "id" -> {
                 idList.add(ID("ID"))
