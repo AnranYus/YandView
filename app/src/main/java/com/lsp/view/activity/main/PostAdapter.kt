@@ -58,7 +58,7 @@ class PostAdapter(val context: Context, private var postYandList: ArrayList<Post
 
             PicActivity.actionStartActivity(context,postYandList[position].id,postYandList[position].sample_url,
                 postYandList[position].file_url,postYandList[position].tags,file_ext,
-                postYandList[position].author,postYandList[position].file_size,postYandList[position].md5)
+                postYandList[position].author,postYandList[position].file_size,postYandList[position].md5,postYandList[position].sample_height,postYandList[position].sample_width)
         }
 
 
@@ -110,7 +110,7 @@ class PostAdapter(val context: Context, private var postYandList: ArrayList<Post
         val width = postYandList[position].sample_width
 
         //图片过长则缩减高度以保证显示完整
-        if (width*0.75 > height){
+        if (width > height){
             holder.picImage.layoutParams.height = height / 2
         }else {
             holder.picImage.layoutParams.height = height

@@ -54,9 +54,6 @@ class IdAdapter(val idList: List<ID>,val context: Context) : RecyclerView.Adapte
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tag = idList[position]
         holder.tagText.text = tag.id
-        if (position == 0) {
-            holder.tagText.setBackgroundResource(R.drawable.title_bg)
-        }
     }
 
     override fun getItemCount(): Int {

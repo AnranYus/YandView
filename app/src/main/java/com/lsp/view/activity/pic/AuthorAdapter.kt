@@ -22,9 +22,6 @@ class AuthorAdapter(val tagList: List<Author>) : RecyclerView.Adapter<AuthorAdap
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tag = tagList[position]
         holder.tagText.text = tag.author
-        if (position == 0) {
-            holder.tagText.setBackgroundResource(R.drawable.title_bg)
-        }
     }
 
     override fun getItemCount(): Int {

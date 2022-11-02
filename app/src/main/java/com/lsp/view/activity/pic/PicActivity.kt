@@ -9,10 +9,8 @@ import android.os.*
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -51,7 +49,7 @@ class PicActivity : BaseActivity() {
 
     companion object{
         fun actionStartActivity(context: Context,id:String,sample_url:String,file_url:String,tags:String,
-                                file_ext:String,author:String,file_size:String,md5:String){
+                                file_ext:String,author:String,file_size:String,md5:String,sample_height:Int,sample_width:Int){
             val intent=Intent(context,PicActivity::class.java)
             intent.putExtra("id", id)
             intent.putExtra("sample_url", sample_url)
@@ -61,6 +59,8 @@ class PicActivity : BaseActivity() {
             intent.putExtra("author", author)
             intent.putExtra("file_size", file_size)
             intent.putExtra("md5", md5)
+            intent.putExtra("sample_height",sample_height)
+            intent.putExtra("sample_width",sample_width)
             context.startActivity(intent)
 
         }
@@ -76,6 +76,14 @@ class PicActivity : BaseActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         image = findViewById(R.id.titleImage)
+
+        val sample_height = intent.getIntExtra("sample_height",-1)
+        val sample_width = intent.getIntExtra("sample_width",-1)
+
+        if (sample_width > sample_height){
+            image.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        }
+
         shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
         val intent = intent
         val tags = intent.getStringExtra("tags")

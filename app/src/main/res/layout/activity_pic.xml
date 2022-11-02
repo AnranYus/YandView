@@ -14,13 +14,13 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="?android:colorBackground"
         android:id="@+id/appbar">
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/ctl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <androidx.appcompat.widget.Toolbar
@@ -34,7 +34,7 @@
                 android:fitsSystemWindows="true"
                 android:id="@+id/titleImage"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/appbar_scrolling_view_behavior"/>
 
@@ -52,13 +52,13 @@
             android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewElevatedStyle"
+                style="?attr/materialCardViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 app:cardCornerRadius="10dp">
 
 

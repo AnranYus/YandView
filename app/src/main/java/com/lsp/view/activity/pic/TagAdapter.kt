@@ -68,9 +68,6 @@ class TagAdapter(val tagList: List<Tags>, val context: Context) :
         holder.tagText.setOnClickListener {
             mOnItemClickListener.onItemClick(it, position)
         }
-        if (position == 0) {
-            holder.tagText.setBackgroundResource(R.drawable.title_bg)
-        }
     }
 
     override fun getItemCount(): Int {

@@ -25,7 +25,6 @@ class SizeAdapter(val tagList: List<Size>) : RecyclerView.Adapter<SizeAdapter.Vi
         val tag = tagList[position]
         if (position == 0) {
             holder.tagText.text = tag.file_size
-            holder.tagText.setBackgroundResource(R.drawable.title_bg)
         } else {
             val sizeKb = tag.file_size.toFloat() / 1024
             val format = DecimalFormat("0.##")
