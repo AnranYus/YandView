@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.lsper.view"
+        applicationId "com.lsp.view"
         minSdkVersion 29
         targetSdkVersion 33
         versionCode 221022
