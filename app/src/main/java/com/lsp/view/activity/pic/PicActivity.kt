@@ -96,18 +96,6 @@ class PicActivity : BaseActivity() {
         }
         md5 = intent.getStringExtra("md5")
 
-        val sharedPreferences = getSharedPreferences("FirstRun", 0)
-        val firstRun = sharedPreferences.getBoolean("FirstRun", true)
-        if (firstRun) {
-            val sharedPreferences = getSharedPreferences("FirstRun", 0).edit()
-            sharedPreferences.putBoolean("FirstRun", false).apply()
-            val FileD =
-                File("${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_PICTURES}/LspMake")
-            FileD.mkdirs()
-
-        }
-
-
         val id = intent.getStringExtra("id")
         if (id != null) {
             loadTags(id, "id")
