@@ -82,8 +82,8 @@ object Util {
     private val handler = object : Handler(Looper.myLooper()!!){
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            when(msg.what){
-                CallBackStatus.OK.ordinal ->{
+            when(msg.obj){
+                CallBackStatus.DOWNLOADSUCCESS ->{
                     Toast.makeText(YandViewApplication.context, R.string.toast_download_success, Toast.LENGTH_SHORT).show()
                 }
 

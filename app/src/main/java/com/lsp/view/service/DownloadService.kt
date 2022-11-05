@@ -19,12 +19,9 @@ class DownloadService : Service() {
 
     class DownloadBinder(val context: Context) : Binder() {
 
-        fun callBack(handler: Handler,status:CallBackStatus,obj:Any?=null){
+        fun callBack(handler: Handler,status:CallBackStatus){
             val msg = Message.obtain()
-            msg.what = status.ordinal
-            if (obj!=null){
-                msg.obj = obj
-            }
+            msg.obj = status
             handler.sendMessage(msg)
 
         }
@@ -60,7 +57,7 @@ class DownloadService : Service() {
                                 null, null
                             )
                             if (md5 == getFileMD5(file.path)) {
-                                callBack(handler, CallBackStatus.OK,file)
+                                callBack(handler, CallBackStatus.DOWNLOADSUCCESS)
                             } else {
                                 file.delete()
                                 callBack(handler,CallBackStatus.MD5COMPAREERROR)
