@@ -8,7 +8,7 @@
             app:defaultValue="yande.re"
             app:entries="@array/pic_source"
             app:entryValues="@array/pic_source"
-            app:key="sourceName"
+            app:key="source_name"
             app:title="@string/setting_item_select_source"
             app:useSimpleSummaryProvider="true" />
 

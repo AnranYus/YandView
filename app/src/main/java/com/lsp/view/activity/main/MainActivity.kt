@@ -75,11 +75,11 @@ class MainActivity : BaseActivity() {
         sourceNameArray = resources.getStringArray(R.array.pic_source)
         sourceUrlArray = resources.getStringArray(R.array.url_source)
         val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
-        if (configSp.getString("sourceName", null) == null) {
-            configSp.edit().putString("sourceName", "yande.re").apply()
+        if (configSp.getString("source_name", null) == null) {
+            configSp.edit().putString("source_name", "yande.re").apply()
             configSp.edit().putString("type", "0").apply()
         }
-        nowSourceName = configSp.getString("sourceName","yande.re")
+        nowSourceName = configSp.getString("source_name","yande.re")
         safeMode = configSp.getBoolean("safe_mode",true)
 
 
@@ -178,9 +178,9 @@ class MainActivity : BaseActivity() {
         super.onResume()
         //加载源改变
         val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
-        if (nowSourceName != configSp.getString("sourceName",null)){
+        if (nowSourceName != configSp.getString("source_name",null)){
             action("")
-            nowSourceName = configSp.getString("sourceName",null)
+            nowSourceName = configSp.getString("source_name",null)
         }
 
         if (safeMode != configSp.getBoolean("safe_mode",true)){
@@ -286,7 +286,7 @@ class MainActivity : BaseActivity() {
 
         //读取配置
         val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
-        val nowSourceName: String? = configSp.getString("sourceName",null)
+        val nowSourceName: String? = configSp.getString("source_name",null)
         var source = ""
         for ((index,sourceName) in sourceNameArray.withIndex()){
             if (sourceName == nowSourceName){
