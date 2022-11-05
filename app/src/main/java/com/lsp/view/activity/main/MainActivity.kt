@@ -74,7 +74,7 @@ class MainActivity : BaseActivity() {
         //初始化数据
         sourceNameArray = resources.getStringArray(R.array.pic_source)
         sourceUrlArray = resources.getStringArray(R.array.url_source)
-        val configSp = getSharedPreferences("com.lsper.view_preferences", 0)
+        val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
         if (configSp.getString("sourceName", null) == null) {
             configSp.edit().putString("sourceName", "yande.re").apply()
             configSp.edit().putString("type", "0").apply()
@@ -177,7 +177,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         //加载源改变
-        val configSp = getSharedPreferences("com.lsper.view_preferences", 0)
+        val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
         if (nowSourceName != configSp.getString("sourceName",null)){
             action("")
             nowSourceName = configSp.getString("sourceName",null)
@@ -285,7 +285,7 @@ class MainActivity : BaseActivity() {
         swipeRefreshLayout.isRefreshing = true
 
         //读取配置
-        val configSp = getSharedPreferences("com.lsper.view_preferences", 0)
+        val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
         val nowSourceName: String? = configSp.getString("sourceName",null)
         var source = ""
         for ((index,sourceName) in sourceNameArray.withIndex()){
