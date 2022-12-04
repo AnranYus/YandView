@@ -37,11 +37,11 @@ object Util {
 
             val imageUri = FileProvider.getUriForFile(
                 context,
-                "com.lsper.view.fileprovider",
+                "com.lsp.view.fileprovider",
                 file
             )
 
-            context.grantUriPermission("com.lsper.view",imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            context.grantUriPermission("com.lsp.view",imageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
 
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "image/*"

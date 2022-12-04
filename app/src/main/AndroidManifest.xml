@@ -14,7 +14,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.lsper.view.fileprovider"
+            android:authorities="com.lsp.view.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
