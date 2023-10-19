@@ -15,7 +15,7 @@ import com.lsp.view.YandViewApplication
 import com.lsp.view.R
 import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.main.MainActivity
-import com.lsp.view.bean.Tags
+import com.lsp.view.repository.bean.Tags
 
 class FavTagActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

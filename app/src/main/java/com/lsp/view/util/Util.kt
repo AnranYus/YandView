@@ -18,6 +18,12 @@ import java.io.File
 import kotlin.concurrent.thread
 
 object Util {
+    const val NETWORK_ERROR: Int = 0
+    const val DOWNLOAD_SUCCESS = 1
+    const val DOWNLOAD_ERROR = 2
+    const val MD5_COMPARE_ERROR = 3
+    const val FILE_EXISTS = 4
+
     fun share(url:String,context: Context){
         thread {
             val bitmap =  Glide.with(context).asBitmap().load(url).submit().get()
@@ -83,19 +89,19 @@ object Util {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when(msg.obj){
-                CallBackStatus.DOWNLOADSUCCESS ->{
+                DOWNLOAD_SUCCESS ->{
                     Toast.makeText(YandViewApplication.context, R.string.toast_download_success, Toast.LENGTH_SHORT).show()
                 }
 
-                CallBackStatus.DOWNLOADERROR.ordinal -> {
+                DOWNLOAD_ERROR -> {
                     Toast.makeText(YandViewApplication.context, R.string.toast_download_fail, Toast.LENGTH_SHORT).show()
 
                 }
-                CallBackStatus.MD5COMPAREERROR.ordinal -> {
+                MD5_COMPARE_ERROR -> {
                     Toast.makeText(YandViewApplication.context, R.string.toast_compar_md5_fail, Toast.LENGTH_SHORT).show()
 
                 }
-                CallBackStatus.FILEEXISTS.ordinal -> {
+                FILE_EXISTS -> {
                     Toast.makeText(YandViewApplication.context, R.string.toast_file_exist, Toast.LENGTH_SHORT).show()
 
                 }

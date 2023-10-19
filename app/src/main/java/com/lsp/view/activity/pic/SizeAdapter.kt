@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lsp.view.R
-import com.lsp.view.bean.Size
+import com.lsp.view.repository.bean.Size
 import java.math.RoundingMode
 import java.text.DecimalFormat
 

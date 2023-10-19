@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.os.*
-import com.lsp.view.util.CallBackStatus
+import com.lsp.view.util.Util
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -19,7 +19,7 @@ class DownloadService : Service() {
 
     class DownloadBinder(val context: Context) : Binder() {
 
-        fun callBack(handler: Handler,status:CallBackStatus){
+        fun callBack(handler: Handler,status:Int){
             val msg = Message.obtain()
             msg.obj = status
             handler.sendMessage(msg)
@@ -35,7 +35,7 @@ class DownloadService : Service() {
                         File("${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_PICTURES}/LspMake/$md5.$end")
 
                     if (file.exists()){
-                        callBack(handler,CallBackStatus.FILEEXISTS)
+                        callBack(handler,Util.FILE_EXISTS)
                         return@thread
                     }
 
@@ -57,24 +57,24 @@ class DownloadService : Service() {
                                 null, null
                             )
                             if (md5 == getFileMD5(file.path)) {
-                                callBack(handler, CallBackStatus.DOWNLOADSUCCESS)
+                                callBack(handler, Util.DOWNLOAD_SUCCESS)
                             } else {
                                 file.delete()
-                                callBack(handler,CallBackStatus.MD5COMPAREERROR)
+                                callBack(handler,Util.MD5_COMPARE_ERROR)
                             }
 
                             return@thread
 
                         } else {
                             file.delete()
-                            callBack(handler, CallBackStatus.NETWORKERROR)
+                            callBack(handler, Util.NETWORK_ERROR)
                             return@thread
                         }
 
 
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        callBack(handler, CallBackStatus.DOWNLOADERROR)
+                        callBack(handler, Util.DOWNLOAD_ERROR)
                         return@thread
                     } finally {
                         fos.close()
@@ -84,7 +84,7 @@ class DownloadService : Service() {
                     FileD.mkdirs()
                     downloadPic(file_url, end, handler, md5)
                 }
-                callBack(handler,CallBackStatus.DOWNLOADERROR)
+                callBack(handler,Util.DOWNLOAD_ERROR)
             }
         }
 

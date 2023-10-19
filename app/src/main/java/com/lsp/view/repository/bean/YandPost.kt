@@ -1,4 +1,4 @@
-package com.lsp.view.bean
+package com.lsp.view.repository.bean
 
 class YandPost(
     val preview_url: String,

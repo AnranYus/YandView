@@ -10,8 +10,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lsp.view.R
-import com.lsp.view.bean.ID
-import com.lsp.view.bean.Tags
+import com.lsp.view.repository.bean.ID
+import com.lsp.view.repository.bean.Tags
 
 class IdAdapter(val idList: List<ID>,val context: Context) : RecyclerView.Adapter<IdAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

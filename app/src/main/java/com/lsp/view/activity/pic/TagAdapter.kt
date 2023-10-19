@@ -10,7 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lsp.view.R
-import com.lsp.view.bean.Tags
+import com.lsp.view.repository.bean.Tags
 
 class TagAdapter(val tagList: List<Tags>, val context: Context) :
     RecyclerView.Adapter<TagAdapter.ViewHolder>() {

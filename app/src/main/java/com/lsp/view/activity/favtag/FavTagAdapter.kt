@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lsp.view.R
-import com.lsp.view.bean.Tags
+import com.lsp.view.repository.bean.Tags
 
 class FavTagAdapter(val tagList: ArrayList<Tags>, val context: Context) :
     RecyclerView.Adapter<FavTagAdapter.ViewHolder>() {

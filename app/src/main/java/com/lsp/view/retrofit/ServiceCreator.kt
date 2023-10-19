@@ -11,13 +11,11 @@ object ServiceCreator {
      * @param source:加载根地址
      *
      */
-    var source: String? = null
     fun <T> create(serviceClass: Class<T>, source: String): T {
         val retrofit = Retrofit.Builder()
             .baseUrl(source)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        ServiceCreator.source = source
         return retrofit.create(serviceClass)
     }
 

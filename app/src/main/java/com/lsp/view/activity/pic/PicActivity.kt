@@ -27,9 +27,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.lsp.view.R
 import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.main.MainActivity
-import com.lsp.view.bean.ID
-import com.lsp.view.bean.Size
-import com.lsp.view.bean.Tags
+import com.lsp.view.repository.bean.ID
+import com.lsp.view.repository.bean.Size
+import com.lsp.view.repository.bean.Tags
 import com.lsp.view.util.Util
 import kotlin.properties.Delegates
 

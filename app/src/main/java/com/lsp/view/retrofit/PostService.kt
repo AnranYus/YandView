@@ -1,6 +1,6 @@
 package com.lsp.view.retrofit
 
-import com.lsp.view.bean.YandPost
+import com.lsp.view.repository.bean.YandPost
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

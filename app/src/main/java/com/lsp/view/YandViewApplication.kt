@@ -11,6 +11,7 @@ import com.google.android.material.color.DynamicColors
 import android.content.Intent
 import com.lsp.view.service.DownloadService
 import androidx.lifecycle.LifecycleOwner
+import com.lsp.view.repository.PostRepository
 
 class YandViewApplication : Application(), DefaultLifecycleObserver {
     private val connection: ServiceConnection = object : ServiceConnection {
@@ -20,6 +21,7 @@ class YandViewApplication : Application(), DefaultLifecycleObserver {
 
         override fun onServiceDisconnected(componentName: ComponentName) {}
     }
+    val repository = PostRepository()
 
     override fun onCreate() {
         super<Application>.onCreate()
