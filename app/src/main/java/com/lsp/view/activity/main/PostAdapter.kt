@@ -12,10 +12,10 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.lsp.view.R
 import com.lsp.view.activity.pic.PicActivity
-import com.lsp.view.bean.Post_yand
+import com.lsp.view.bean.YandPost
 
 
-class PostAdapter(val context: Context, private var postYandList: ArrayList<Post_yand>) :
+class PostAdapter(val context: Context, private var postYandList: ArrayList<YandPost>) :
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     val TAG = this::class.java.simpleName
     private val UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
@@ -26,13 +26,13 @@ class PostAdapter(val context: Context, private var postYandList: ArrayList<Post
 
     }
 
-    fun addData(list: ArrayList<Post_yand>) {
+    fun addData(list: ArrayList<YandPost>) {
         val pos = postYandList.size
         postYandList.addAll(list)
         notifyItemRangeInserted(pos, list.size)
     }
 
-    fun refreshData(list: ArrayList<Post_yand>) {
+    fun refreshData(list: ArrayList<YandPost>) {
 
         val oldSize = postYandList.size
         postYandList.clear()

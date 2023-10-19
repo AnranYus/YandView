@@ -25,7 +25,7 @@ import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.favtag.FavTagActivity
 import com.lsp.view.activity.model.MainActivityModelImpl
 import com.lsp.view.activity.setting.SettingsActivity
-import com.lsp.view.bean.Post_yand
+import com.lsp.view.bean.YandPost
 import com.lsp.view.util.CallBackStatus
 
 
@@ -303,10 +303,10 @@ class MainActivity : BaseActivity() {
                     CallBackStatus.OK.ordinal -> {
                         if (type == ISREFRESH )
                         //刷新数据
-                            adapter.refreshData(msg.obj as ArrayList<Post_yand>)
+                            adapter.refreshData(msg.obj as ArrayList<YandPost>)
                         else if (type == ISADDDATA)
                         //加载数据
-                            adapter.addData(msg.obj as ArrayList<Post_yand>)
+                            adapter.addData(msg.obj as ArrayList<YandPost>)
 
                     }
                     CallBackStatus.NETWORKERROR.ordinal -> {

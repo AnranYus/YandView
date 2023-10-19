@@ -37,7 +37,6 @@ import kotlin.properties.Delegates
 class PicActivity : BaseActivity() {
 
 
-    private val tagList = ArrayList<Tags>()
     private val idList = ArrayList<ID>()
     private val sizeList = ArrayList<Size>()
     private lateinit var image: ImageView
@@ -200,9 +199,7 @@ class PicActivity : BaseActivity() {
                 target: Target<Drawable?>?,
                 isFirstResource: Boolean
             ): Boolean {
-                if (e != null) {
-                    e.printStackTrace()
-                }
+                e?.printStackTrace()
                 val back = findViewById<ImageView>(R.id.back)
                 Snackbar.make(back, R.string.toast_load_fail, Snackbar.LENGTH_LONG).setAction(R.string.button_check) {
                     AlertDialog.Builder(this@PicActivity).apply {
@@ -251,6 +248,7 @@ class PicActivity : BaseActivity() {
     //设置tags列表
     //这写的很烂 得改
     private fun loadTags(tags: String, type: String) {
+        val tagList = ArrayList<Tags>()
 
         when (type) {
             "tags" -> {
