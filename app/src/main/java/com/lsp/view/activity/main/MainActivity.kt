@@ -9,10 +9,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat.Type.ime
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -121,10 +120,9 @@ class MainActivity : BaseActivity() {
 
         shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
 
-        search.setOnEditorActionListener { v, actionId, event ->
+        search.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val searchTag = search.text.toString()
-                action(searchTag)
+                action(search.text.toString())
             }
             return@setOnEditorActionListener false
         }
@@ -249,8 +247,7 @@ class MainActivity : BaseActivity() {
 
 
     private fun hideIm() {
-        val controller = ViewCompat.getWindowInsetsController(window.decorView)
-        controller?.hide(ime())
+        WindowCompat.getInsetsController(this.window,window.decorView).hide(ime())
     }
 
     //执行加载

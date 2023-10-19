@@ -6,9 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.*
+import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
@@ -25,12 +27,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.lsp.view.R
 import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.main.MainActivity
-import com.lsp.view.bean.Author
 import com.lsp.view.bean.ID
 import com.lsp.view.bean.Size
 import com.lsp.view.bean.Tags
 import com.lsp.view.util.Util
-import java.io.File
 import kotlin.properties.Delegates
 
 
@@ -38,7 +38,6 @@ class PicActivity : BaseActivity() {
 
 
     private val tagList = ArrayList<Tags>()
-    private val authorList = ArrayList<Author>()
     private val idList = ArrayList<ID>()
     private val sizeList = ArrayList<Size>()
     private lateinit var image: ImageView
@@ -167,19 +166,22 @@ class PicActivity : BaseActivity() {
 
     }
 
-    override fun onBackPressed() {
-        if (photoView.visibility == View.GONE) {
-            super.onBackPressed()
-        } else {
-            photoView.animate()
-                .alpha(0f)
-                .setDuration(shortAnnotationDuration.toLong())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        photoView.visibility = View.GONE
-                    }
-                })
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        onBackPressedDispatcher.addCallback{
+            if (photoView.visibility != View.GONE) {
+                photoView.animate()
+                    .alpha(0f)
+                    .setDuration(shortAnnotationDuration.toLong())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            photoView.visibility = View.GONE
+                        }
+                    })
+            }else{
+                finish()
+            }
         }
+        return super.dispatchKeyEvent(event)
     }
 
     private fun loadPic(url: String) {

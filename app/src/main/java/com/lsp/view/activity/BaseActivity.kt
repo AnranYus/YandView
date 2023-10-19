@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 
 open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +26,8 @@ open class BaseActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
         //状态栏反色
-        val controller = ViewCompat.getWindowInsetsController(window.decorView)
-        controller?.isAppearanceLightStatusBars = !isDarkMode()
+        WindowCompat.getInsetsController(window,window.decorView).isAppearanceLightStatusBars = !isDarkMode()
+
     }
 
     /**
