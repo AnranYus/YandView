@@ -4,13 +4,12 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.*
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
@@ -18,32 +17,30 @@ import androidx.core.view.WindowInsetsCompat.Type.ime
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.lsp.view.YandViewApplication
 import com.lsp.view.R
-import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.favtag.FavTagActivity
 import com.lsp.view.activity.setting.SettingsActivity
 import com.lsp.view.model.MainViewModel
 
 
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var search: EditText
     private var shortAnnotationDuration: Int = 0
     private var username: String? = ""
     private var nowSourceName: String? = null
     val TAG = javaClass.simpleName
     private var safeMode: Boolean = true //安全模式
-    private lateinit var toolbar:Toolbar
     private lateinit var viewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        toolbar = findViewById(R.id.toolbar)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         viewModel = MainViewModel.provideFactory((application as YandViewApplication).repository, this,this).create(MainViewModel::class.java)
@@ -58,9 +55,9 @@ class MainActivity : BaseActivity() {
             Snackbar.make(refresh,it,Snackbar.LENGTH_SHORT).show()
         }
 
-        val appbar = findViewById<AppBarLayout>(R.id.appbar)
-        val nowHeight = appbar.layoutParams.height
-        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
+//        val appbar = findViewById<AppBarLayout>(R.id.appbar)
+//        val nowHeight = appbar.layoutParams.height
+//        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
 
 
         refresh.setOnRefreshListener {
@@ -82,13 +79,13 @@ class MainActivity : BaseActivity() {
             this.adapter = viewModel.adapter
         }
 
-        search = findViewById(R.id.search)
 
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
         }
 
+        search = findViewById(R.id.search)
         shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
 
         search.setOnEditorActionListener { _, actionId, _ ->
@@ -154,7 +151,7 @@ class MainActivity : BaseActivity() {
             safeMode = configSp.getBoolean("safe_mode",true)
         }
 
-        search.setText("")
+//        search.setText("")
 
     }
 

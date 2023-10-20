@@ -19,21 +19,16 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
             <com.google.android.material.appbar.AppBarLayout
-                android:fitsSystemWindows="true"
-                android:id="@+id/appbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:menu="@menu/toolbar_menu"
                     android:id="@+id/toolbar"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
                     >
                     <EditText
                         android:layout_width="match_parent"
@@ -58,8 +53,6 @@
                     android:id="@+id/recyclerview"/>
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </LinearLayout>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>
@@ -71,11 +64,6 @@
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
         />
-
-
-
-
-    <!--        TODO 侧边连：登录 收藏 Tag列表-->
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

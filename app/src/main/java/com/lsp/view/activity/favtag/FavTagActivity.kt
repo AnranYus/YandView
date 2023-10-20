@@ -5,19 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.*
-import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.lsp.view.YandViewApplication
 import com.lsp.view.R
-import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.main.MainActivity
 import com.lsp.view.repository.bean.Tags
 
-class FavTagActivity : BaseActivity() {
+class FavTagActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fav_tag)
@@ -26,9 +24,6 @@ class FavTagActivity : BaseActivity() {
         //Toolbar相关
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val appbar = findViewById<AppBarLayout>(R.id.appbar)
-        val nowHeight = appbar.layoutParams.height
-        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
 

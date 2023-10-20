@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -25,7 +26,6 @@ import com.google.android.flexbox.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.lsp.view.R
-import com.lsp.view.activity.BaseActivity
 import com.lsp.view.activity.main.MainActivity
 import com.lsp.view.repository.bean.ID
 import com.lsp.view.repository.bean.Size
@@ -34,7 +34,7 @@ import com.lsp.view.util.Util
 import kotlin.properties.Delegates
 
 
-class PicActivity : BaseActivity() {
+class PicActivity : AppCompatActivity() {
 
 
     private val idList = ArrayList<ID>()

@@ -29,26 +29,11 @@ class YandViewApplication : Application(), DefaultLifecycleObserver {
         DynamicColors.applyToActivitiesIfAvailable(this)
         val serviceIntent = Intent(this, DownloadService::class.java)
         bindService(serviceIntent, connection, BIND_AUTO_CREATE)
-        statusBarHeight()
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         unbindService(connection)
-    }
-
-    //计算状态栏高度
-    fun statusBarHeight(): Int {
-        var height = 0
-        val resourceId = resources.getIdentifier(
-            "status_bar_height",
-            "dimen",
-            "android"
-        )
-        if (resourceId > 0) {
-            height = resources.getDimensionPixelSize(resourceId)
-        }
-        return height
     }
 
     companion object {
