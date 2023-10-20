@@ -75,7 +75,7 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
             try {
                  val postList = repository.fetchPostData(
-                    _uiState.value.nowSearchText,
+                    _uiState.value.nowSearchText.value,
                     _uiState.value.isSafe,
                     _uiState.value.nowPage
                 )
@@ -100,13 +100,6 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
     }
 
-    fun fetchNewPostBySearch(target:String){
-        _uiState.update {
-            it.copy(nowSearchText = target)
-        }
-
-        fetchNewPost()
-    }
 
     fun fetchPostByRefresh(){
         _uiState.update {

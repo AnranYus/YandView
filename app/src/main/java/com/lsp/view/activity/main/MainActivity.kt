@@ -55,6 +55,26 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(refresh,it,Snackbar.LENGTH_SHORT).show()
         }
 
+        search = findViewById(R.id.search)
+        shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+
+        search.setOnEditorActionListener { content, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.uiState.value.nowSearchText.value = content.text.toString()
+                viewModel.fetchPostByRefresh()
+            }
+            return@setOnEditorActionListener false
+        }
+
+        //接收来自PicActivity的快捷搜索Tag
+        val stringExtra = intent.getStringExtra("searchTag")
+        if (stringExtra!=null){
+            viewModel.uiState.value.nowSearchText.value = stringExtra
+        }
+        viewModel.uiState.value.nowSearchText.observe(this){
+            search.setText(it)
+        }
+
 //        val appbar = findViewById<AppBarLayout>(R.id.appbar)
 //        val nowHeight = appbar.layoutParams.height
 //        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
@@ -84,17 +104,6 @@ class MainActivity : AppCompatActivity() {
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
         }
-
-        search = findViewById(R.id.search)
-        shortAnnotationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-
-        search.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.fetchNewPostBySearch(search.text.toString())
-            }
-            return@setOnEditorActionListener false
-        }
-
 
 
         //侧边栏
@@ -196,7 +205,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.search_nav -> {
                 if (viewModel.uiState.value.showSearchBar) {
-                    viewModel.fetchNewPostBySearch(search.text.toString())
+                    viewModel.fetchPostByRefresh()
                     hideIm()
 
                 }
