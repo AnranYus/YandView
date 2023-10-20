@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.lsp.view.YandViewApplication
 import com.lsp.view.R
 import com.lsp.view.activity.BaseActivity
@@ -42,14 +43,10 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        viewModel = MainViewModel.provideFactory((application as YandViewApplication).repository, this,this).create(MainViewModel::class.java)
-
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val appbar = findViewById<AppBarLayout>(R.id.appbar)
-        val nowHeight = appbar.layoutParams.height
-        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
+
+        viewModel = MainViewModel.provideFactory((application as YandViewApplication).repository, this,this).create(MainViewModel::class.java)
         //刷新
         val refresh =
             findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipeRefreshLayout)
@@ -57,6 +54,14 @@ class MainActivity : BaseActivity() {
         viewModel.uiState.value.isRefreshing.observe(this) {
             refresh.isRefreshing = it
         }
+        viewModel.errorMessage.observe(this){
+            Snackbar.make(refresh,it,Snackbar.LENGTH_SHORT).show()
+        }
+
+        val appbar = findViewById<AppBarLayout>(R.id.appbar)
+        val nowHeight = appbar.layoutParams.height
+        appbar.layoutParams.height = (application as YandViewApplication).statusBarHeight()+nowHeight
+
 
         refresh.setOnRefreshListener {
             viewModel.fetchPostByRefresh()

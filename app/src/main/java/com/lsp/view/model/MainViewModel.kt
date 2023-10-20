@@ -2,16 +2,15 @@ package com.lsp.view.model
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Message
-import android.widget.Toast
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lsp.view.activity.main.PostAdapter
 import com.lsp.view.repository.PostRepository
 import androidx.savedstate.SavedStateRegistryOwner
-import com.lsp.view.repository.bean.YandPost
 import com.lsp.view.repository.exception.NetworkErrorException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,12 +20,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: PostRepository,private val context: Context):ViewModel() {
+class MainViewModel(private val repository: PostRepository,context: Context):ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState:StateFlow<UiState> = _uiState.asStateFlow()
     private var fetchJob: Job? = null
     val adapter = PostAdapter(context)
     private val TAG = this::class.java.simpleName
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage
+        get() = _errorMessage as LiveData<String>
+
 
     companion object {
         fun provideFactory(
@@ -86,9 +89,7 @@ class MainViewModel(private val repository: PostRepository,private val context: 
                 }
 
             }catch (e:NetworkErrorException){
-                launch(Dispatchers.Main){
-                    Toast.makeText(context,e.message,Toast.LENGTH_SHORT).show()
-                }
+                _errorMessage.postValue(e.message.toString())
             }
 
             _uiState.value.isRefreshing.postValue(false)
