@@ -66,6 +66,8 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
             it.apply {
                 it.nowSourceName.postValue(configSp.getString("source_name",null))
             }
+
+            it.copy(isSafe = configSp.getBoolean("safe_mode",true))
         }
 
     }

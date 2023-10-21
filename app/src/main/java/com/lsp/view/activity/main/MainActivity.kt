@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.os.*
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -157,6 +158,7 @@ class MainActivity : AppCompatActivity() {
         val nowMode = configSp.getBoolean("safe_mode", true)
         if (viewModel.uiState.value.isSafe != nowMode){
             viewModel.updateSafeMode(nowMode)
+            Log.e(TAG,nowMode.toString())
         }
 
     }

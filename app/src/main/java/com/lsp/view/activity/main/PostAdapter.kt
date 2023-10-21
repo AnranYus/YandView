@@ -1,15 +1,10 @@
 package com.lsp.view.activity.main
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -32,7 +27,7 @@ class PostAdapter(val context: Context):
 
     }
 
-    fun pushNewData(list: ArrayList<YandPost>) {
+    fun pushNewData(list: List<YandPost>) {
         val oldSize = postList.size
         postList.clear()
         notifyItemRangeRemoved(0,oldSize)
@@ -40,7 +35,7 @@ class PostAdapter(val context: Context):
         notifyItemRangeInserted(0, list.size)
     }
 
-    fun appendDate(list: ArrayList<YandPost>){
+    fun appendDate(list: List<YandPost>){
         val pos = postList.size
         postList.addAll(list)
         notifyItemRangeInserted(pos, list.size)

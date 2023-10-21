@@ -1,12 +1,10 @@
 package com.lsp.view.repository.api
 
-import android.util.Log
 import com.lsp.view.repository.Load
 import com.lsp.view.repository.bean.Post
 import com.lsp.view.repository.bean.YandPost
 import com.lsp.view.repository.exception.NetworkErrorException
 import retrofit2.Call
-import java.net.SocketException
 
 interface PostApi {
     private val TAG: String
@@ -22,7 +20,6 @@ interface PostApi {
             val execute = service.execute()
             return if (execute.isSuccessful) {
                 if (execute.body() != null) {
-                    Log.e(TAG, execute.body().toString())
                     execute.body()!!
 
                 } else {

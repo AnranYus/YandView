@@ -1,6 +1,5 @@
 package com.lsp.view.repository
 
-import android.os.Handler
 import com.lsp.view.repository.bean.YandPost
 
 
@@ -8,8 +7,7 @@ class PostRepository {
     private val dataSource = PostDataSource()
 
     //获取post
-    suspend fun fetchPostData(searchTarget :String?,safe:Boolean,page:Int): ArrayList<YandPost> {
-
+    suspend fun fetchPostData(searchTarget :String?,safe:Boolean,page:Int): List<YandPost> {
         var target = searchTarget
         var isNum = true
 
@@ -25,8 +23,14 @@ class PostRepository {
         }
 
         val load = Load.Builder(target,page,safe)
+        val dataList = dataSource.fetchNewPost(load)
 
-        return dataSource.fetchNewPost(load)
+        return if (safe){
+            dataList.filter { it.rating == "s" }
+        }else{
+            dataList
+        }
+
 
 
     }
