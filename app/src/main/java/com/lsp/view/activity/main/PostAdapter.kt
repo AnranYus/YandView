@@ -38,7 +38,7 @@ class PostAdapter(val context: Context):
     fun appendDate(list: List<YandPost>){
         val pos = postList.size
         postList.addAll(list)
-        notifyItemRangeInserted(pos, list.size)
+        notifyItemRangeInserted(pos-1, list.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

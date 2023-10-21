@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.adapter.apply {
             setLoadMoreListener(object :PostAdapter.OnScrollToBottom{
                 override fun event(position: Int) {
-                    viewModel.appendPost()
+                    viewModel.fetchMore()
                 }
 
             })

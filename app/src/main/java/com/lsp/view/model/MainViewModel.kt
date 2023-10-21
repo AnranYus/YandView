@@ -72,21 +72,19 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
     }
 
-    private fun fetchNewPost(){
+    private fun fetchNewPost(append:Boolean = false){
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(Dispatchers.IO) {
-
             _uiState.value.isRefreshing.postValue(true)
-
             try {
-                 val postList = repository.fetchPostData(
+                val postList = repository.fetchPostData(
                     _uiState.value.nowSearchText.value,
                     _uiState.value.isSafe,
                     _uiState.value.nowPage
                 )
 
                 launch(Dispatchers.Main) {
-                    if (_uiState.value.isAppend){
+                    if (append){
                         adapter.appendDate(postList)
                     }else{
                         adapter.pushNewData(postList)
@@ -100,8 +98,6 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
             _uiState.value.isRefreshing.postValue(false)
 
         }
-
-
 
     }
 
@@ -124,18 +120,9 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
         fetchNewPost()
     }
 
-    fun appendPost(){
-
-        _uiState.update {
-            it.copy(isAppend = true)
-        }
-
-        fetchNewPost()
-
-        _uiState.update {
-            it.copy(isAppend = false)
-        }
-
+    fun fetchMore(){
+        _uiState.value.nowPage++
+        fetchNewPost(true)
     }
 
     fun updateSafeMode(mode:Boolean){

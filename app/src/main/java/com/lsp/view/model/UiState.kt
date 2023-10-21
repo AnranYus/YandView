@@ -8,8 +8,7 @@ data class UiState(
     var nowSearchText:MutableLiveData<String> = MutableLiveData(""),
     val nowSourceName: MutableLiveData<String> = MutableLiveData(),
     val isSafe: Boolean = true, //安全模式
-    val nowPage:Int = 1,
-    val isAppend:Boolean = false
+    var nowPage:Int = 1,
 ){
     fun switchShowSearchBar(){
         showSearchBar = !showSearchBar
