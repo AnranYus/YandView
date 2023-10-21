@@ -22,7 +22,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: PostRepository,context: Context):ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
-    val uiState:StateFlow<UiState> = _uiState.asStateFlow()
+    val uiState:StateFlow<UiState>
+        get() =  _uiState.asStateFlow()
     private var fetchJob: Job? = null
     val adapter = PostAdapter(context)
     private val TAG = this::class.java.simpleName
@@ -62,7 +63,9 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
         }
 
         _uiState.update {
-            it.copy(nowSourceName = configSp.getString("source_name",null))
+            it.apply {
+                it.nowSourceName.postValue(configSp.getString("source_name",null))
+            }
         }
 
     }
@@ -109,6 +112,16 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
         fetchNewPost()
     }
 
+    fun fetchPostBySearch(searchTarget:String){
+        _uiState.update {
+            it.apply {
+                it.nowSearchText.postValue(searchTarget)
+            }
+        }
+
+        fetchNewPost()
+    }
+
     fun appendPost(){
 
         _uiState.update {
@@ -123,4 +136,15 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
     }
 
+    fun updateSafeMode(mode:Boolean){
+        _uiState.update {
+            it.copy(isSafe = mode)
+        }
+        fetchNewPost()
+    }
+
+    fun updateNowSource(source:String){
+        _uiState.value.nowSourceName.postValue(source)
+        fetchPostByRefresh()
+    }
 }

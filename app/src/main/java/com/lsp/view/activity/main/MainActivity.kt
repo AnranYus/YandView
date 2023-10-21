@@ -30,9 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var search: EditText
     private var shortAnnotationDuration: Int = 0
     private var username: String? = ""
-    private var nowSourceName: String? = null
     val TAG = javaClass.simpleName
-    private var safeMode: Boolean = true //安全模式
     private lateinit var viewModel: MainViewModel
 
 
@@ -60,8 +58,7 @@ class MainActivity : AppCompatActivity() {
 
         search.setOnEditorActionListener { content, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.uiState.value.nowSearchText.value = content.text.toString()
-                viewModel.fetchPostByRefresh()
+                viewModel.fetchPostBySearch(content.text.toString())
             }
             return@setOnEditorActionListener false
         }
@@ -150,17 +147,17 @@ class MainActivity : AppCompatActivity() {
 
         //加载源改变
         val configSp = getSharedPreferences("com.lsp.view_preferences", 0)
-        if (nowSourceName != configSp.getString("source_name",null)){
-            viewModel.fetchPostByRefresh()
-            nowSourceName = configSp.getString("source_name",null)
+
+        val nowSourceName = configSp.getString("source_name", null)
+
+        if (nowSourceName != null && viewModel.uiState.value.nowSourceName.value != nowSourceName){
+            viewModel.updateNowSource(nowSourceName)
         }
 
-        if (safeMode != configSp.getBoolean("safe_mode",true)){
-            viewModel.fetchPostByRefresh()
-            safeMode = configSp.getBoolean("safe_mode",true)
+        val nowMode = configSp.getBoolean("safe_mode", true)
+        if (viewModel.uiState.value.isSafe != nowMode){
+            viewModel.updateSafeMode(nowMode)
         }
-
-//        search.setText("")
 
     }
 
