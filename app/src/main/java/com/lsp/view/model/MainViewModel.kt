@@ -11,6 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.lsp.view.activity.main.PostAdapter
 import com.lsp.view.repository.PostRepository
 import androidx.savedstate.SavedStateRegistryOwner
+import com.lsp.view.repository.bean.Post
+import com.lsp.view.repository.bean.YandPost
 import com.lsp.view.repository.exception.NetworkErrorException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,11 +27,13 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
     val uiState:StateFlow<UiState>
         get() =  _uiState.asStateFlow()
     private var fetchJob: Job? = null
-    val adapter = PostAdapter(context)
     private val TAG = this::class.java.simpleName
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage
         get() = _errorMessage as LiveData<String>
+
+    private val _postList = MutableLiveData<ArrayList<YandPost>>()
+    val postList get() = _postList as LiveData<ArrayList<YandPost>>
 
 
     companion object {
@@ -77,19 +81,11 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
         fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _uiState.value.isRefreshing.postValue(true)
             try {
-                val postList = repository.fetchPostData(
+                _postList.postValue(repository.fetchPostData(
                     _uiState.value.nowSearchText.value,
                     _uiState.value.isSafe,
                     _uiState.value.nowPage
-                )
-
-                launch(Dispatchers.Main) {
-                    if (append){
-                        adapter.appendDate(postList)
-                    }else{
-                        adapter.pushNewData(postList)
-                    }
-                }
+                ))
 
             }catch (e:NetworkErrorException){
                 _errorMessage.postValue(e.message.toString())

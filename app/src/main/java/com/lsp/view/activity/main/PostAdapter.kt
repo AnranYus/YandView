@@ -14,13 +14,11 @@ import com.lsp.view.activity.pic.PicActivity
 import com.lsp.view.repository.bean.YandPost
 
 
-class PostAdapter(val context: Context):
+class PostAdapter(val context: Context,private val postList: ArrayList<YandPost> = ArrayList()):
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     val TAG = this::class.java.simpleName
     private val UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
-
-    private var postList = ArrayList<YandPost>()
-
+    var isAppendData = false//数据追加标志
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val picImage: ImageView = view.findViewById(R.id.picImgae)
@@ -39,6 +37,7 @@ class PostAdapter(val context: Context):
         val pos = postList.size
         postList.addAll(list)
         notifyItemRangeInserted(pos-1, list.size)
+        isAppendData = false
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

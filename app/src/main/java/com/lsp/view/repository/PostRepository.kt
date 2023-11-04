@@ -7,7 +7,7 @@ class PostRepository {
     private val dataSource = PostDataSource()
 
     //获取post
-    suspend fun fetchPostData(searchTarget :String?,safe:Boolean,page:Int): List<YandPost> {
+    suspend fun fetchPostData(searchTarget :String?,safe:Boolean,page:Int): ArrayList<YandPost> {
         var target = searchTarget
         var isNum = true
 
@@ -26,7 +26,7 @@ class PostRepository {
         val dataList = dataSource.fetchNewPost(load)
 
         return if (safe){
-            dataList.filter { it.rating == "s" }
+            ArrayList(dataList.filter { it.rating == "s" })
         }else{
             dataList
         }
