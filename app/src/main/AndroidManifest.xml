@@ -23,12 +23,8 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
-
         <activity
-            android:name=".activity.favtag.FavTagActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activity.setting.SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
 
@@ -36,12 +32,8 @@
             android:name=".service.DownloadService"
             android:enabled="true"
             android:exported="true" />
-
         <activity
-            android:name=".activity.pic.PicActivity"
-            android:configChanges="uiMode"/>
-        <activity
-            android:name=".activity.main.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

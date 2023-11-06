@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/postListFragment">
+
+    <fragment
+        android:id="@+id/postListFragment"
+        android:name="com.lsp.view.fragment.PostListFragment"
+        android:label="PostListFragment" >
+        <action
+            android:id="@+id/action_postListFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_on_bottom"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/slide_out_bottom" >
+        </action>
+        <action
+            android:id="@+id/action_postListFragment_to_collectFragment"
+            app:destination="@id/collectFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.lsp.view.fragment.ImageFragment"
+        android:label="fragment_pic"
+        tools:layout="@layout/fragment_image" >
+    </fragment>
+    <fragment
+        android:id="@+id/collectFragment"
+        android:name="com.lsp.view.fragment.CollectFragment"
+        android:label="fragment_collect"
+        tools:layout="@layout/fragment_collect" >
+        <action
+            android:id="@+id/action_collectFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_on_bottom"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/slide_out_bottom"/>
+    </fragment>
+</navigation>

@@ -8,33 +8,51 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lsp.view.activity.main.PostAdapter
-import com.lsp.view.repository.PostRepository
+import com.lsp.view.fragment.adapter.PostAdapter
+import com.lsp.view.repository.network.PostRepository
 import androidx.savedstate.SavedStateRegistryOwner
-import com.lsp.view.repository.bean.Post
-import com.lsp.view.repository.bean.YandPost
+import com.lsp.view.YandViewApplication
+import com.lsp.view.bean.YandPost
+import com.lsp.view.repository.datasource.CollectDatabase
+import com.lsp.view.repository.datasource.CollectRepository
+import com.lsp.view.repository.datasource.CollectRepositoryImpl
+import com.lsp.view.repository.datasource.model.Collect
 import com.lsp.view.repository.exception.NetworkErrorException
+import com.lsp.view.ui.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: PostRepository,context: Context):ViewModel() {
+class MainViewModel(private val repository: PostRepository, context: Context):ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState:StateFlow<UiState>
         get() =  _uiState.asStateFlow()
     private var fetchJob: Job? = null
     private val TAG = this::class.java.simpleName
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage
-        get() = _errorMessage as LiveData<String>
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage
+        get() = _toastMessage as LiveData<String>
 
     private val _postList = MutableLiveData<ArrayList<YandPost>>()
     val postList get() = _postList as LiveData<ArrayList<YandPost>>
+    val adapter by lazy {
+        fetchPostByRefresh()
+        PostAdapter(context)
+    }
+    private val _collectList:MutableLiveData<List<Collect>> = MutableLiveData()
+    val collectList:LiveData<List<Collect>>
+        get() = _collectList
 
+    private val collectRepository: CollectRepository by lazy {
+        CollectRepositoryImpl(CollectDatabase.getDatabase(context).collectDao())
+    }
+
+    @Volatile private var isProcessing = false
 
     companion object {
         fun provideFactory(
@@ -76,7 +94,7 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
     }
 
-    private fun fetchNewPost(append:Boolean = false){
+    private fun fetchNewPost(){
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _uiState.value.isRefreshing.postValue(true)
@@ -88,7 +106,7 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
                 ))
 
             }catch (e:NetworkErrorException){
-                _errorMessage.postValue(e.message.toString())
+                postNewToast(e.message.toString())
             }
 
             _uiState.value.isRefreshing.postValue(false)
@@ -118,7 +136,7 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
 
     fun fetchMore(){
         _uiState.value.nowPage++
-        fetchNewPost(true)
+        fetchNewPost()
     }
 
     fun updateSafeMode(mode:Boolean){
@@ -132,4 +150,40 @@ class MainViewModel(private val repository: PostRepository,context: Context):Vie
         _uiState.value.nowSourceName.postValue(source)
         fetchPostByRefresh()
     }
+
+    fun getCollectList(){
+        viewModelScope.launch {
+            _collectList.postValue(collectRepository.getAllCollect())
+        }
+    }
+
+    fun addCollect(collect: Collect){
+        if (!isProcessing){
+            viewModelScope.launch {
+                collectRepository.addNewCollect(collect)
+
+            }
+        }
+    }
+
+    fun removeCollect(collect:Collect){
+
+        if (!isProcessing){
+            viewModelScope.launch {
+                collectRepository.removeCollect(collect)
+
+            }
+        }
+
+    }
+
+    suspend fun getCollectByPostId(postId:String) = viewModelScope.async {
+        val type = YandViewApplication.context?.getSharedPreferences("com.lsp.view_preferences",Context.MODE_PRIVATE)?.getString("source_name", "yande.re")
+        collectRepository.getCollectByPostId(postId,type!!)
+    }
+
+    fun postNewToast(content:String){
+        _toastMessage.postValue(content)
+    }
+
 }
