@@ -2,7 +2,6 @@
     <string name="app_name" translatable="false">YandView</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_settings_backup" translatable="false">SettingsActivity_backup</string>
-    <string name="title_activity_favouriteTag">FavouriteTag</string>
     <string name="item_gallery">Gallery</string>
     <string name="item_collect">Collect</string>
     <string name="item_settings">Settings</string>
@@ -25,8 +24,8 @@
     <string name="toast_tag_exist">This tag exist</string>
     <string name="toast_download_success">Successfully download</string>
     <string name="toast_download_fail">Download failed</string>
-    <string name="toast_compar_md5_fail">MD5 comparison failed</string>
     <string name="toast_file_exist">File exists</string>
     <string name="toast_download_start">Start download</string>
     <string name="title_share">Share</string>
+    <string name="title_collect">Collect</string>
 </resources>
