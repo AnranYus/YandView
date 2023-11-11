@@ -37,4 +37,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/slide_out_bottom"/>
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.lsp.view.ui.fragment.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>
