@@ -1,4 +1,4 @@
-package com.lsp.view.fragment
+package com.lsp.view.ui.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -23,7 +23,7 @@ import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lsp.view.R
 import com.lsp.view.YandViewApplication
-import com.lsp.view.activity.MainActivity
+import com.lsp.view.ui.activity.MainActivity
 import com.lsp.view.bean.Post
 import com.lsp.view.repository.datasource.model.Collect
 import com.lsp.view.repository.datasource.model.Collect.Companion.toCollect

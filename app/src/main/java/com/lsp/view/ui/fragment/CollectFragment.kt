@@ -1,4 +1,4 @@
-package com.lsp.view.fragment
+package com.lsp.view.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,9 +9,9 @@ import android.view.animation.AnimationUtils
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.lsp.view.fragment.adapter.PostAdapter
+import com.lsp.view.ui.fragment.adapter.PostAdapter
 import com.lsp.view.R
-import com.lsp.view.activity.MainActivity
+import com.lsp.view.ui.activity.MainActivity
 import com.lsp.view.bean.Post
 
 /**

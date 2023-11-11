@@ -1,4 +1,4 @@
-package com.lsp.view.activity
+package com.lsp.view.ui.activity
 
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.lsp.view.R
-import com.lsp.view.model.MainViewModel
+import com.lsp.view.ui.MainViewModel
 import com.lsp.view.repository.network.PostRepository
 
 
@@ -29,12 +29,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.toastMessage.observe(this){
             Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
-        }
-
-        //接收来自PicActivity的快捷搜索Tag
-        val stringExtra = intent.getStringExtra("searchTag")
-        if (stringExtra!=null){
-            viewModel.uiState.value.nowSearchText.value = stringExtra
         }
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment

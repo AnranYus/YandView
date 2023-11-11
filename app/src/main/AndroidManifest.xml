@@ -23,17 +23,13 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_settings" />
 
         <service
             android:name=".service.DownloadService"
             android:enabled="true"
             android:exported="true" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

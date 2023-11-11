@@ -1,4 +1,4 @@
-package com.lsp.view.model
+package com.lsp.view.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lsp.view.fragment.adapter.PostAdapter
+import com.lsp.view.ui.fragment.adapter.PostAdapter
 import com.lsp.view.repository.network.PostRepository
 import androidx.savedstate.SavedStateRegistryOwner
 import com.lsp.view.YandViewApplication
@@ -18,7 +18,6 @@ import com.lsp.view.repository.datasource.CollectRepository
 import com.lsp.view.repository.datasource.CollectRepositoryImpl
 import com.lsp.view.repository.datasource.model.Collect
 import com.lsp.view.repository.exception.NetworkErrorException
-import com.lsp.view.ui.UiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async

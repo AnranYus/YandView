@@ -1,4 +1,4 @@
-package com.lsp.view.fragment
+package com.lsp.view.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,15 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.search.SearchBar
 import com.google.android.material.search.SearchView
-import com.lsp.view.fragment.adapter.PostAdapter
+import com.lsp.view.ui.fragment.adapter.PostAdapter
 import com.lsp.view.R
-import com.lsp.view.activity.MainActivity
+import com.lsp.view.ui.activity.MainActivity
 import com.lsp.view.bean.Post
-import com.lsp.view.model.MainViewModel
+import com.lsp.view.ui.MainViewModel
 
 class PostListFragment:Fragment() {
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(requireActivity(),MainViewModel.provideFactory(activityContext.repository,requireContext(),this)).get(MainViewModel::class.java)
+        ViewModelProvider(requireActivity(),
+            MainViewModel.provideFactory(activityContext.repository,requireContext(),this)).get(
+            MainViewModel::class.java)
     }
     private lateinit var activityContext: MainActivity
 

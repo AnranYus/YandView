@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/postListFragment"
-        android:name="com.lsp.view.fragment.PostListFragment"
+        android:name="com.lsp.view.ui.fragment.PostListFragment"
         android:label="PostListFragment" >
         <action
             android:id="@+id/action_postListFragment_to_imageFragment"
@@ -17,19 +17,16 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/slide_out_bottom" >
         </action>
-        <action
-            android:id="@+id/action_postListFragment_to_collectFragment"
-            app:destination="@id/collectFragment" />
     </fragment>
     <fragment
         android:id="@+id/imageFragment"
-        android:name="com.lsp.view.fragment.ImageFragment"
+        android:name="com.lsp.view.ui.fragment.ImageFragment"
         android:label="fragment_pic"
         tools:layout="@layout/fragment_image" >
     </fragment>
     <fragment
         android:id="@+id/collectFragment"
-        android:name="com.lsp.view.fragment.CollectFragment"
+        android:name="com.lsp.view.ui.fragment.CollectFragment"
         android:label="fragment_collect"
         tools:layout="@layout/fragment_collect" >
         <action

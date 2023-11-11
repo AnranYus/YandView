@@ -1,4 +1,4 @@
-package com.lsp.view.fragment.adapter
+package com.lsp.view.ui.fragment.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
