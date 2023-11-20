@@ -87,14 +87,7 @@ class PostListFragment:Fragment() {
 
         viewModel.adapter.setOnListItemClick(object : PostAdapter.OnListItemClick {
             override fun setOnListItemClick(post: Post) {
-                val bundle = Bundle()
-                bundle.putParcelable("post",post)
-                Navigation.findNavController(view).navigate(R.id.action_postListFragment_to_imageFragment,bundle)
-                val slideOutAnimation = AnimationUtils.loadAnimation(context,
-                    R.anim.slide_out_bottom
-                )
-                activityContext.bottomNav.startAnimation(slideOutAnimation)
-                activityContext.bottomNav.visibility = View.GONE
+                ImageFragment.navigationToImageFragment(activityContext,post,view,R.id.action_postListFragment_to_imageFragment)
             }
 
         })

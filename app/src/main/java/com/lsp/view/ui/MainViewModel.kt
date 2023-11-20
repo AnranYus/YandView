@@ -52,6 +52,9 @@ class MainViewModel(private val repository: PostRepository, context: Context):Vi
     }
 
     @Volatile private var isProcessing = false
+    private val _tagsList = MutableLiveData<ArrayList<String>>()
+    val tagsList get() = _tagsList as LiveData<ArrayList<String>>
+
 
     companion object {
         fun provideFactory(

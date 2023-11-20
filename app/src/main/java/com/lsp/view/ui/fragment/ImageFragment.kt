@@ -13,9 +13,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -74,6 +76,12 @@ class ImageFragment : Fragment() {
                     }
                     true
                 }
+                R.id.tags_menu_btn -> {
+                    val tagBottomSheet = TagBottomSheet(post?.tags)
+                    tagBottomSheet.show(activityContext.supportFragmentManager,TagBottomSheet.TAG)
+
+                    true
+                }
 
                 else -> {false}
             }
@@ -113,6 +121,7 @@ class ImageFragment : Fragment() {
 
 
     }
+
 
     private fun collectIt(collect: Collect){
             activityContext.viewModel.addCollect(collect)
@@ -199,6 +208,26 @@ class ImageFragment : Fragment() {
         }
 
 
+    }
+
+    companion object{
+        fun navigationToImageFragment(context:MainActivity ,post:Post,view:View,fragmentId:Int){
+            val bundle = Bundle()
+            bundle.putParcelable("post",post)
+            val tags = post.tags?.split(",")?.toList()
+
+            context.viewModel.tagsList.value?.apply {
+                clear()
+                tags?.let { addAll(it) }
+            }
+
+            Navigation.findNavController(view).navigate(fragmentId,bundle)
+            val slideOutAnimation = AnimationUtils.loadAnimation(context,
+                R.anim.slide_out_bottom
+            )
+            context.bottomNav.startAnimation(slideOutAnimation)
+            context.bottomNav.visibility = View.GONE
+        }
     }
 
 

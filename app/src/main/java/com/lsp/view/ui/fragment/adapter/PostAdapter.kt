@@ -18,7 +18,6 @@ class PostAdapter(val context: Context,private val postList: ArrayList<Post> = A
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
     val TAG = this::class.java.simpleName
     private var inBottom:Boolean = false//当前列表是否在底部
-    @Volatile private var isProcess:Boolean = false
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val picImage: ImageView = view.findViewById(R.id.image)
@@ -26,24 +25,20 @@ class PostAdapter(val context: Context,private val postList: ArrayList<Post> = A
     }
 
     fun pushNewData(list: List<Post>) {
-        if (!isProcess) {
-            isProcess = true
-            if (inBottom) {
-                //在底部，则追加数据
-                val pos = postList.size
-                postList.addAll(list)
-                notifyItemRangeInserted(pos - 1, list.size)
-            } else {
-                //不在则刷新数据
-                val oldSize = postList.size
-                postList.clear()
-                notifyItemRangeRemoved(0, oldSize)
-                postList.addAll(list)
-                notifyItemRangeInserted(0, list.size)
-            }
+        if (inBottom) {
+            //在底部，则追加数据
+            val pos = postList.size
+            postList.addAll(list)
+            notifyItemRangeInserted(pos - 1, list.size)
+        } else {
+            //不在则刷新数据
+            val oldSize = postList.size
+            postList.clear()
+            notifyItemRangeRemoved(0, oldSize)
+            postList.addAll(list)
+            notifyItemRangeInserted(0, list.size)
         }
 
-        isProcess = false
         inBottom = false//加入新数据后不在底部，若仍在底部说明无更多数据，也不必处理
 
     }

@@ -7,8 +7,7 @@ class YandPost(
     @SerializedName("sample_url") override val sampleUrl: String,
     @SerializedName("sample_height") override val sampleHeight : Int,
     @SerializedName("sample_width") override val sampleWidth: Int,
-    @SerializedName("file_ext") val fileExt: String,
-    @SerializedName("file_size") val fileSize: String,
     @SerializedName("id") override val postId: String,
-    rating: String
-):Post(postId, rating, sampleUrl,fileUrl,sampleHeight,sampleWidth)
+    rating: String,
+    tags:String?
+):Post(postId, rating, sampleUrl,fileUrl,sampleHeight,sampleWidth,tags)

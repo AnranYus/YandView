@@ -10,5 +10,10 @@
         android:title="@string/title_collect"
         android:icon="@drawable/ic_baseline_favorite_24"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/tags_menu_btn"
+        android:title="@string/tags"
+        android:icon="@drawable/ic_baseline_label_24"
+        app:showAsAction="ifRoom"/>
+
 
 </menu>

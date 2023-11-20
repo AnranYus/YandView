@@ -14,8 +14,6 @@
             android:id="@+id/image_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-
-
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
             style="@style/Widget.Material3.BottomAppBar"
@@ -31,6 +29,7 @@
             app:layout_anchor="@id/bottomAppBar"
             app:srcCompat="@drawable/baseline_file_download_24"
             android:contentDescription="@string/description_download" />
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

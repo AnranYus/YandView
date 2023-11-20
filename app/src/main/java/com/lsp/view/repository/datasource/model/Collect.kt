@@ -16,8 +16,9 @@ data class Collect(
     @ColumnInfo(name = "file_url")override val fileUrl:String,
     @ColumnInfo(name = "sampleHeight") override val sampleHeight:Int,
     @ColumnInfo(name = "sampleWeight") override val sampleWidth:Int,
-    @ColumnInfo(name = "type")val type:String
-):Post(postId,rating,sampleUrl,fileUrl,sampleHeight,sampleWidth){
+    @ColumnInfo(name = "type")val type:String,
+    @ColumnInfo(name = "tags") override val tags:String?
+):Post(postId,rating,sampleUrl,fileUrl,sampleHeight,sampleWidth,tags){
     constructor(
         postId: String,
         sampleUrl:String,
@@ -25,10 +26,11 @@ data class Collect(
         fileUrl:String,
         sampleHeight:Int,
         sampleWeight:Int,
+        tags:String?
     ): this(0, postId, sampleUrl, rating, fileUrl, sampleHeight, sampleWeight,
-        YandViewApplication.context?.getSharedPreferences("com.lsp.view_preferences",Context.MODE_PRIVATE)?.getString("source_name", "yande.re")!!)
+        YandViewApplication.context?.getSharedPreferences("com.lsp.view_preferences",Context.MODE_PRIVATE)?.getString("source_name", "yande.re")!!,tags)
     companion object{
-        fun Post.toCollect():Collect = Collect(this.postId,this.sampleUrl,this.rating,this.fileUrl,this.sampleHeight,this.sampleWidth )
+        fun Post.toCollect():Collect = Collect(this.postId,this.sampleUrl,this.rating,this.fileUrl,this.sampleHeight,this.sampleWidth ,this.tags)
 
     }
 }

@@ -10,6 +10,7 @@ open class Post(
     open val fileUrl:String,
     open val sampleHeight: Int,
     open val sampleWidth: Int,
+    open val tags:String?
     ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -17,7 +18,8 @@ open class Post(
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readInt(),
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readString()!!
     )
 
     override fun describeContents(): Int {
@@ -31,6 +33,7 @@ open class Post(
         dest.writeString(fileUrl)
         dest.writeInt(sampleHeight)
         dest.writeInt(sampleWidth)
+        dest.writeString(tags)
     }
 
     companion object {
