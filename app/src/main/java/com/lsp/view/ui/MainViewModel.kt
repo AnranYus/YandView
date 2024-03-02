@@ -96,26 +96,26 @@ class MainViewModel(private val repository: PostRepository, context: Context):Vi
 
     }
 
-    private fun fetchNewPost(){
+    private fun fetchNewPost() {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch(Dispatchers.IO) {
             _uiState.value.isRefreshing.postValue(true)
             try {
-                _postList.postValue(repository.fetchPostData(
+                val newPosts = repository.fetchPostData(
                     _uiState.value.nowSearchText.value,
                     _uiState.value.isSafe,
                     _uiState.value.nowPage
-                ))
-
-            }catch (e:NetworkErrorException){
+                )
+                val currentPosts = _postList.value ?: arrayListOf()
+                currentPosts.addAll(0,newPosts)
+                _postList.postValue(currentPosts)
+            } catch (e: NetworkErrorException) {
                 postNewToast(e.message.toString())
             }
-
             _uiState.value.isRefreshing.postValue(false)
-
         }
-
     }
+
 
 
     fun fetchPostByRefresh(){
