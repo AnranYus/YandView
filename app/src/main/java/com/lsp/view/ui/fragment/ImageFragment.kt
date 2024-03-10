@@ -76,12 +76,6 @@ class ImageFragment : Fragment() {
                     }
                     true
                 }
-                R.id.tags_menu_btn -> {
-                    val tagBottomSheet = TagBottomSheet(post?.tags)
-                    tagBottomSheet.show(activityContext.supportFragmentManager,TagBottomSheet.TAG)
-
-                    true
-                }
 
                 else -> {false}
             }
