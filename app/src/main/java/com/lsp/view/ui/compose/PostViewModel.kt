@@ -1,6 +1,5 @@
 package com.lsp.view.ui.compose
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lsp.view.bean.YandPost
@@ -36,14 +35,14 @@ class PostViewModel:ViewModel() {
                     _uiState.value.safeModel,
                     _uiState.value.page
                 )
-                Log.d("PostViewModel",data.size.toString())
-                postData.value = data
-
+                _uiState.value.page ++
+                postData.value += data
             } catch (e: NetworkErrorException) {
                 //todo network error
             }
             _uiState.value.refresh = false
         }
     }
+
 
 }
