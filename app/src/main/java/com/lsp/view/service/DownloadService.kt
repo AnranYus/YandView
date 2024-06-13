@@ -38,8 +38,8 @@ class DownloadService : Service() {
                     .url(fileUrl)
                     .build()
                 val response = client.newCall(request).execute()
-                val responseData = response.body()?.bytes()
-                return if (response.code() == 200) {
+                val responseData = response.body?.bytes()
+                return if (response.code == 200) {
                     fos.write(responseData)
                     //通知媒体更新
                     MediaScannerConnection.scanFile(
