@@ -6,8 +6,14 @@ import com.lsp.view.repository.exception.UnableConstructObjectException
 import com.lsp.view.repository.network.api.PostApi
 import com.lsp.view.repository.network.api.PostApiImpl
 import com.lsp.view.bean.YandPost
+import com.lsp.view.common.Pre
+import com.lsp.view.common.PreKV
 
 class PostDataSource {
+    companion object{
+        const val YANDE_RE = "yande.re"
+        const val KONACHAN = "konachan"
+    }
     private val api: PostApi = PostApiImpl()
 
 
@@ -28,8 +34,8 @@ data class Load(
         fun Builder(tags: String?, page: Int, safe:Boolean): Load {
             val sourceNameArray = YandViewApplication.context!!.resources.getStringArray(R.array.pic_source)
             val sourceUrlArray = YandViewApplication.context!!.resources.getStringArray(R.array.url_source)
-            val configSp = YandViewApplication.context?.getSharedPreferences("com.lsp.view_preferences", 0)
-            val nowSourceName: String? = configSp?.getString("source_name",null)
+            val configSp = YandViewApplication.context?.getSharedPreferences(Pre.NAME, 0)
+            val nowSourceName: String = configSp?.getString(PreKV.SOURCE_NAME,null) ?: PostDataSource.YANDE_RE
             val load =  Load(tags,page,safe)
 
             //初始化数据
