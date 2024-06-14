@@ -130,17 +130,6 @@ class ImageFragment : Fragment() {
     }
 
     private fun download(fileUrl: String){
-        lifecycleScope.launch(Dispatchers.IO) {
-            activityContext.viewModel.postNewToast("Start download")
-            val result = (activityContext.application as YandViewApplication).downloadBinder.downloadImage(fileUrl)
-            if (result.isSuccess){
-                activityContext.viewModel.postNewToast("Download successfully")
-            }else{
-                val exception = result.exceptionOrNull()
-                activityContext.viewModel.postNewToast(exception?.message.toString())
-            }
-
-        }
 
     }
 

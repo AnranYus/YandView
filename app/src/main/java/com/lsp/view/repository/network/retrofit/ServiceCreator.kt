@@ -7,6 +7,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceCreator {
 
+    val CLIENT = OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }).build()
 
     /**
      * @param serviceClass:所属类的Service接口
@@ -14,16 +17,11 @@ object ServiceCreator {
      *
      */
     fun <T> create(serviceClass: Class<T>, source: String): T {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-
-        val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
 
 
         val retrofit = Retrofit.Builder()
             .baseUrl(source)
-            .client(client)
+            .client(CLIENT)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         return retrofit.create(serviceClass)

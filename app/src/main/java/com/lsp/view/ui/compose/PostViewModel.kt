@@ -1,5 +1,6 @@
 package com.lsp.view.ui.compose
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lsp.view.bean.YandPost
@@ -17,6 +18,7 @@ class PostViewModel:ViewModel() {
     private val repository by lazy {
         PostRepository()
     }
+    val downloadAction = MutableLiveData<Unit>()
 
     init {
         initData()
@@ -24,6 +26,10 @@ class PostViewModel:ViewModel() {
 
     private fun initData(){
         fetchPost()
+    }
+
+    fun actionDownload(){
+        downloadAction.postValue(Unit)
     }
 
     fun fetchPost(){

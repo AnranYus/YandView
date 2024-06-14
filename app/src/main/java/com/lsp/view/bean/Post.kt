@@ -2,6 +2,7 @@ package com.lsp.view.bean
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.io.Serializable
 
 open class Post(
     open val postId: String,
@@ -11,7 +12,7 @@ open class Post(
     open val sampleHeight: Int,
     open val sampleWidth: Int,
     open val tags:String?
-    ): Parcelable {
+    ): Parcelable,Serializable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
         parcel.readString()!!,
