@@ -94,7 +94,7 @@ class PostActivity : ComponentActivity() {
         setContent {
             LspViewTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     App()
                 }
@@ -167,37 +167,36 @@ fun PostListScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
-    Box(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
-        Column {
-            Row(modifier = Modifier.padding(vertical = 4.dp)) {
-                SearchBar(uiState.searchTarget) {
-                    viewModel.fetchPost(it, refresh = true)
-                }
+    Column {
+        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+            SearchBar(uiState.searchTarget) {
+                viewModel.fetchPost(it, refresh = true)
             }
-            Row {
-                LazyVerticalStaggeredGrid(
-                    state = listState,
-                    columns = StaggeredGridCells.Adaptive(200.dp),
-                    verticalItemSpacing = 4.dp,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    content = {
-                        items(items = postList, key = {
-                            it.postId//提供key以保持列表顺序稳定
-                        }) {
-                            Row(Modifier.animateItemPlacement(tween(durationMillis = 250))) {
-                                PostItem(it, clickable = {
-                                    onNavigateToDetail.invoke(it)
-                                })
-                            }
-
-                        }
-                    },
-                    modifier = Modifier.background(Color.Transparent)
-                )
-            }
-
         }
+        Row {
+            LazyVerticalStaggeredGrid(
+                state = listState,
+                columns = StaggeredGridCells.Adaptive(200.dp),
+                verticalItemSpacing = 4.dp,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                content = {
+                    items(items = postList, key = {
+                        it.postId//提供key以保持列表顺序稳定
+                    }) {
+                        Row(Modifier.animateItemPlacement(tween(durationMillis = 250))) {
+                            PostItem(it, clickable = {
+                                onNavigateToDetail.invoke(it)
+                            })
+                        }
+
+                    }
+                },
+                modifier = Modifier.background(Color.Transparent)
+            )
+        }
+
     }
+
 
 
 }
