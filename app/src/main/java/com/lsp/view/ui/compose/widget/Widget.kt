@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +38,7 @@ fun SearchBar(searchTarget: String = "", searchEvent: (String) -> Unit) {
             .padding(horizontal = 24.dp)
             .fillMaxWidth()
             .height(56.dp)
-            .background(Color.White, shape = RoundedCornerShape(56.dp)),
+            .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(56.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -58,7 +59,7 @@ fun SearchBar(searchTarget: String = "", searchEvent: (String) -> Unit) {
                 input = it
             },
             singleLine = true,
-            textStyle = TextStyle(fontSize = 20.sp),
+            textStyle = TextStyle(fontSize = 20.sp, color = MaterialTheme.colorScheme.onSurfaceVariant),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions {
                 keyboardController?.hide()
