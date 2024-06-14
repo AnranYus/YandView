@@ -168,7 +168,7 @@ fun PostListScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     Column {
-        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(modifier = Modifier.padding(vertical = 12.dp)) {
             SearchBar(uiState.searchTarget) {
                 viewModel.fetchPost(it, refresh = true)
             }
