@@ -32,21 +32,24 @@ class PostViewModel:ViewModel() {
         downloadAction.postValue(Unit)
     }
 
-    fun fetchPost(){
+    fun fetchPost(searchTarget: String = _uiState.value.searchTarget,refresh:Boolean = false){
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value.refresh = true
+            _uiState.value.searchTarget = searchTarget
             try {
                 val data = repository.fetchPostData(
-                    _uiState.value.searchTarget,
+                    searchTarget,
                     _uiState.value.safeModel,
                     _uiState.value.page
                 )
                 _uiState.value.page ++
-                postData.value += data
+                postData.value  =  if (refresh){
+                   data
+                }else{
+                     postData.value + data
+                }
             } catch (e: NetworkErrorException) {
                 //todo network error
             }
-            _uiState.value.refresh = false
         }
     }
 
