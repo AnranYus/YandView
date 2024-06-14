@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 class PostViewModel:ViewModel() {
     private val _uiState = MutableStateFlow(PostUiState())
@@ -19,6 +20,7 @@ class PostViewModel:ViewModel() {
         PostRepository()
     }
     val downloadAction = MutableLiveData<Unit>()
+    val downloadResult = MutableLiveData<Result<Serializable>>()
 
     init {
         initData()
@@ -51,6 +53,10 @@ class PostViewModel:ViewModel() {
                 //todo network error
             }
         }
+    }
+
+    fun setDownloadResult(result: Result<Serializable>){
+        downloadResult.postValue(result)
     }
 
 

@@ -106,18 +106,13 @@ class PostActivity : ComponentActivity() {
                 val result =
                     downloadBinder.downloadImage(viewModel.uiState.value.selectPost?.fileUrl ?: "")
                         .await()
-                launch(Dispatchers.Main) {
-                    if (result.isSuccess) {
-                        Toast.makeText(
-                            this@PostActivity, "Download successful", Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            this@PostActivity, "Download fail", Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+                viewModel.setDownloadResult(result)
             }
+        }
+
+        viewModel.downloadResult.observe(this){
+            val message = it.getOrThrow()
+            Toast.makeText(this,message.toString(),Toast.LENGTH_SHORT).show()
         }
 
         val serviceIntent = Intent(this, DownloadService::class.java)
