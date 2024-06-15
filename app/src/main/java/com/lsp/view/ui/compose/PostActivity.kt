@@ -9,7 +9,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,17 +40,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -58,6 +60,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.lsp.view.bean.Post
@@ -78,7 +82,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 private const val TAG = "Compose_PostActivity"
 
@@ -160,9 +164,46 @@ fun PostListScreen(
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
     val uiState by viewModel.uiState.collectAsState()
+    var lastScrollOffset by remember {
+        mutableIntStateOf(0)
+    }
+    var lastScrollPosition by remember {
+        mutableIntStateOf(0)
+    }
+
+    /**
+     * 1 scroll up
+     * -1 scroll down
+     * 0 default
+     */
+    var scrollDirectionState by remember {
+        mutableIntStateOf(0)
+    }
+
+    val scope = rememberCoroutineScope()
+    var searchBarHeightSize by remember {
+        mutableStateOf(0.dp)
+    }
+    val density = LocalDensity.current
+
+    val searchBarPadding by remember {
+        mutableStateOf(24.dp)
+    }
 
     LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo }.map { layoutInfo ->
+
+        snapshotFlow { listState.layoutInfo }.also{
+            it.collect{
+                if (lastScrollOffset<listState.firstVisibleItemScrollOffset && lastScrollPosition < listState.firstVisibleItemIndex){
+                    scrollDirectionState = -1
+                }
+                if (lastScrollOffset > listState.firstVisibleItemScrollOffset && lastScrollPosition > listState.firstVisibleItemIndex){
+                    scrollDirectionState = 1
+                }
+                lastScrollOffset = listState.firstVisibleItemScrollOffset
+                lastScrollPosition = listState.firstVisibleItemIndex
+            }
+        }.map { layoutInfo ->
                 layoutInfo.visibleItemsInfo.lastOrNull()?.index == postList.lastIndex
             }.distinctUntilChanged().collect { reachedEnd ->
                 //避免初次加载数据时，list未绘制导致被判断为到达底部
@@ -172,24 +213,21 @@ fun PostListScreen(
             }
     }
 
-    val scope = rememberCoroutineScope()
-    Scaffold(topBar = {
-        Row(modifier = Modifier.padding(vertical = 12.dp)) {
-            SearchBar(uiState.searchTarget.value) {
-                viewModel.fetchPost(it, refresh = true)
-                scope.launch {
-                    listState.animateScrollToItem(index = 0)
-                }
-            }
-        }
-    }, containerColor = Color.Transparent) {
-        Row {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column{
             LazyVerticalStaggeredGrid(
                 state = listState,
                 columns = StaggeredGridCells.Adaptive(200.dp),
                 verticalItemSpacing = 4.dp,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 content = {
+                    //放置两个item将下面的内容顶下来
+                    items(count = 2, key = {
+                        Random.nextInt()
+                    }) {
+                        Box(modifier = Modifier.height(searchBarHeightSize + searchBarPadding).fillMaxWidth())
+                    }
+
                     items(items = postList, key = {
                         it.postId//提供key以保持列表顺序稳定
                     }) {
@@ -203,10 +241,47 @@ fun PostListScreen(
                 },
                 modifier = Modifier
                     .background(Color.Transparent)
-                    .padding(top = it.calculateTopPadding())
             )
         }
+
+        AnimatedVisibility(
+            visible = scrollDirectionState != -1,
+            enter = slideInVertically(
+                // 进入动画，从顶部滑下
+                initialOffsetY = { -it },
+                animationSpec = tween(durationMillis = 300)
+            ),
+            exit = slideOutVertically(
+                // 退出动画，向上滑动消失
+                targetOffsetY = { -it },
+                animationSpec = tween(durationMillis = 300)
+            )
+        ) {
+
+            SearchBar(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = searchBarPadding / 2)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .onGloballyPositioned {
+                        searchBarHeightSize = with(density) {
+                            it.size.height.toDp()
+                        }
+                    },
+                searchTarget = uiState.searchTarget.value
+            ) {
+                viewModel.fetchPost(it, refresh = true)
+                scope.launch {
+                    listState.animateScrollToItem(index = 0)
+                }
+            }
+        }
+
+
+
     }
+
+
 }
 
 @Composable
