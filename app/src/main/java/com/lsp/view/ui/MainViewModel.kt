@@ -103,7 +103,6 @@ class MainViewModel(private val repository: PostRepository, context: Context):Vi
             try {
                 val newPosts = repository.fetchPostData(
                     _uiState.value.nowSearchText.value,
-                    _uiState.value.isSafe,
                     _uiState.value.nowPage
                 )
                 val currentPosts = _postList.value ?: arrayListOf()

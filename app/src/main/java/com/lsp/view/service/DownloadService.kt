@@ -1,6 +1,5 @@
 package com.lsp.view.service
 
-import android.accounts.NetworkErrorException
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -14,14 +13,25 @@ import kotlinx.coroutines.async
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
-import java.io.Serializable
 
+class Result(val success:Boolean,val message: String,val exception: Exception?){
+    companion object{
+        fun success(message:String):Result{
+            return Result(true,message,null)
+        }
+
+        fun failure(message: String = "",exception: Exception? = null):Result{
+            return Result(false,message,exception)
+        }
+    }
+
+}
 class DownloadService : Service() {
     private val mBinder = DownloadBinder(this)
 
     class DownloadBinder(val context: Context) : Binder() {
 
-        fun downloadImage(fileUrl: String): Deferred<Result<Serializable>> {
+        fun downloadImage(fileUrl: String): Deferred<Result> {
             return CoroutineScope(Dispatchers.IO).async {
                 val fileDir =
                     File("${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_PICTURES}/LspMake/")
@@ -33,7 +43,7 @@ class DownloadService : Service() {
                 val file =
                     File("${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_PICTURES}/LspMake/$fileName")
                 if (file.exists()) {
-                    return@async Result.failure<Exception>(Exception("File exists"))
+                    return@async Result.failure("File exists")
                 }
                 val fos = FileOutputStream(file)
                 try {
@@ -52,15 +62,15 @@ class DownloadService : Service() {
                         Result.success("File download successfully")
                     } else {
                         file.delete()
-                        Result.failure<Exception>(NetworkErrorException("Connection timed out"))
+                        Result.failure("Connection timed out")
                     }
                 } catch (e: Exception) {
-                    Result.failure<Exception>(e)
+                    Result.failure(exception = e)
                 } finally {
                     fos.close()
                 }
 
-                return@async Result.failure(Exception("Unknown error"))
+                return@async Result.failure(message = "Unknown error")
             }
         }
 

@@ -28,20 +28,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -62,6 +70,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -76,13 +85,16 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.lsp.view.R
+import com.lsp.view.common.Config
 import com.lsp.view.service.DownloadService
 import com.lsp.view.ui.compose.widget.SearchBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 private const val TAG = "Compose_PostActivity"
@@ -121,8 +133,8 @@ class PostActivity : ComponentActivity() {
         }
 
         viewModel.downloadResult.observe(this){
-            val message = it.getOrThrow()
-            Toast.makeText(this,message.toString(),Toast.LENGTH_SHORT).show()
+            val message = it.message
+            Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
         }
 
         val serviceIntent = Intent(this, DownloadService::class.java)
@@ -157,7 +169,9 @@ fun App(viewModel: PostViewModel = viewModel()) {
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class
+)
 @Composable
 fun PostListScreen(
     navController: NavController, onNavigateToDetail: (Post) -> Unit, viewModel: PostViewModel
@@ -191,6 +205,19 @@ fun PostListScreen(
         mutableStateOf(24.dp)
     }
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    val refreshing by remember {
+        uiState.refresh
+    }
+    
+    val pullRefreshState = rememberPullRefreshState(refreshing = refreshing, onRefresh = {
+        scope.launch(Dispatchers.IO) {
+            viewModel.fetchPost(refresh = true)
+        }
+    })
+
+
     LaunchedEffect(listState) {
 
         snapshotFlow { listState.layoutInfo }.also{
@@ -209,43 +236,50 @@ fun PostListScreen(
             }.distinctUntilChanged().collect { reachedEnd ->
                 //避免初次加载数据时，list未绘制导致被判断为到达底部
                 if (reachedEnd && listState.firstVisibleItemIndex != 0) {
-                    viewModel.fetchPost()
+                    withContext(Dispatchers.IO){
+                        viewModel.fetchPost()
+                    }
                 }
             }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column{
-            LazyVerticalStaggeredGrid(
-                state = listState,
-                columns = StaggeredGridCells.Adaptive(200.dp),
-                verticalItemSpacing = 4.dp,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                content = {
-                    //放置两个item将下面的内容顶下来
-                    items(count = 2, key = {
-                        Random.nextInt()
-                    }) {
-                        Box(modifier = Modifier
-                            .height(searchBarHeightSize + searchBarPadding)
-                            .fillMaxWidth())
+        LazyVerticalStaggeredGrid(
+            state = listState,
+            columns = StaggeredGridCells.Adaptive(200.dp),
+            verticalItemSpacing = 4.dp,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            content = {
+                //放置两个item将下面的内容顶下来
+                items(count = 2, key = {
+                    Random.nextInt()
+                }) {
+                    Box(modifier = Modifier
+                        .height(searchBarHeightSize + searchBarPadding)
+                        .fillMaxWidth())
+                }
+
+                items(items = postList, key = {
+                    it.postId//提供key以保持列表顺序稳定
+                }) {
+                    Row(Modifier.animateItemPlacement(tween(durationMillis = 250))) {
+                        PostItem(it, clickable = {
+                            onNavigateToDetail.invoke(it)
+                        })
                     }
 
-                    items(items = postList, key = {
-                        it.postId//提供key以保持列表顺序稳定
-                    }) {
-                        Row(Modifier.animateItemPlacement(tween(durationMillis = 250))) {
-                            PostItem(it, clickable = {
-                                onNavigateToDetail.invoke(it)
-                            })
-                        }
+                }
+            },
+            modifier = Modifier
+                .background(Color.Transparent)
+                .pullRefresh(pullRefreshState)
 
-                    }
-                },
-                modifier = Modifier
-                    .background(Color.Transparent)
-            )
-        }
+        )
+
+        PullRefreshIndicator(refreshing, pullRefreshState,
+            Modifier
+                .align(Alignment.TopCenter)
+                .padding(searchBarHeightSize+searchBarPadding))
 
         AnimatedVisibility(
             visible = scrollDirectionState != -1,
@@ -271,16 +305,37 @@ fun PostListScreen(
                             it.size.height.toDp()
                         }
                     },
-                searchTarget = uiState.searchTarget.value
-            ) {
-                viewModel.fetchPost(it, refresh = true)
-                scope.launch {
-                    listState.animateScrollToItem(index = 0)
+                searchTarget = uiState.searchTarget.value,
+                searchEvent = {
+                    scope.launch(Dispatchers.IO) {
+                        viewModel.fetchPost(it, refresh = true)
+                        listState.animateScrollToItem(index = 0)
+                    }
+                }, menuButtonAction = {
+                    showBottomSheet = true
                 }
-            }
+            )
         }
 
+        if (showBottomSheet){
+            var safeModel by remember {
+                mutableStateOf(Config.getSafeMode())
+            }
+            ModalBottomSheet(onDismissRequest ={showBottomSheet = false}, modifier = Modifier.height(400.dp)){
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = "Safe mode", modifier = Modifier.wrapContentSize(), style = MaterialTheme.typography.bodyLarge)
+                    Switch(checked = safeModel, onCheckedChange = {
+                        safeModel = it
+                        Config.setSafeMode(it)
+                    })
+                }
+                MaterialTheme.shapes.large
+            }
 
+        }
 
     }
 
@@ -329,6 +384,7 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
         scale *= zoomChange
         rotation += rotationChange
     }
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .background(Color.Black)
@@ -347,6 +403,7 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                 .transformable(state = state)
                 .background(Color.Black)
         )
+
         Column {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -362,7 +419,10 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.actionDownload() }) {
+                    IconButton(onClick = {
+                        viewModel.actionDownload()
+                        Toast.makeText(context,"Start download",Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_arrow_downward_24),
                             contentDescription = "Download"

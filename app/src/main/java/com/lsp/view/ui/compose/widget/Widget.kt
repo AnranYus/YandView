@@ -1,6 +1,7 @@
 package com.lsp.view.ui.compose.widget
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +33,7 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun SearchBar(modifier: Modifier = Modifier,searchTarget: String = "", searchEvent: (String) -> Unit) {
+fun SearchBar(modifier: Modifier = Modifier,searchTarget: String = "", searchEvent: (String) -> Unit,menuButtonAction: () -> Unit) {
     Row(
         modifier = modifier
             .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(56.dp)),
@@ -45,6 +46,9 @@ fun SearchBar(modifier: Modifier = Modifier,searchTarget: String = "", searchEve
                 .padding(15.dp)
                 .height(30.dp)
                 .width(30.dp)
+                .clickable {
+                    menuButtonAction.invoke()
+                }
         )
 
         var input: String by remember { mutableStateOf(searchTarget) }

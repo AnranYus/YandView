@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.lsp.view.bean.YandPost
 import com.lsp.view.repository.exception.NetworkErrorException
 import com.lsp.view.repository.network.PostRepository
+import com.lsp.view.service.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.Serializable
 
 class PostViewModel:ViewModel() {
     private val _uiState = MutableStateFlow(PostUiState())
@@ -20,42 +20,46 @@ class PostViewModel:ViewModel() {
         PostRepository()
     }
     val downloadAction = MutableLiveData<Unit>()
-    val downloadResult = MutableLiveData<Result<Serializable>>()
+    val downloadResult = MutableLiveData<Result>()
 
     init {
         initData()
     }
 
     private fun initData(){
-        fetchPost()
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchPost()
+        }
     }
 
     fun actionDownload(){
         downloadAction.postValue(Unit)
     }
 
-    fun fetchPost(searchTarget: String = _uiState.value.searchTarget.value,refresh:Boolean = false){
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value.searchTarget.value = searchTarget
-            try {
-                val data = repository.fetchPostData(
-                    searchTarget,
-                    _uiState.value.safeModel,
-                    _uiState.value.page
-                )
-                _uiState.value.page ++
-                postData.value  =  if (refresh){
-                   data
-                }else{
-                     postData.value + data
-                }
-            } catch (e: NetworkErrorException) {
-                //todo network error
+    suspend fun fetchPost(searchTarget: String = _uiState.value.searchTarget.value,refresh:Boolean = false){
+        _uiState.value.refresh.value = true
+        _uiState.value.searchTarget.value = searchTarget
+        try {
+            if (refresh){
+                _uiState.value.page = 0
             }
+            val data = repository.fetchPostData(
+                searchTarget,
+                _uiState.value.page
+            )
+            postData.value  =  if (refresh){
+                data
+            }else{
+                _uiState.value.page ++
+                postData.value + data
+            }
+        } catch (e: NetworkErrorException) {
+            //todo network error
         }
+        _uiState.value.refresh.value = false
     }
 
-    fun setDownloadResult(result: Result<Serializable>){
+    fun setDownloadResult(result: Result){
         downloadResult.postValue(result)
     }
 
