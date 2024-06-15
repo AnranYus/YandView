@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridS
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -103,7 +104,7 @@ class PostActivity : ComponentActivity() {
         setContent {
             LspViewTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.secondaryContainer
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     App()
                 }
@@ -156,7 +157,7 @@ fun App(viewModel: PostViewModel = viewModel()) {
 
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PostListScreen(
     navController: NavController, onNavigateToDetail: (Post) -> Unit, viewModel: PostViewModel
@@ -225,7 +226,9 @@ fun PostListScreen(
                     items(count = 2, key = {
                         Random.nextInt()
                     }) {
-                        Box(modifier = Modifier.height(searchBarHeightSize + searchBarPadding).fillMaxWidth())
+                        Box(modifier = Modifier
+                            .height(searchBarHeightSize + searchBarPadding)
+                            .fillMaxWidth())
                     }
 
                     items(items = postList, key = {
@@ -286,30 +289,33 @@ fun PostListScreen(
 
 @Composable
 fun PostItem(post: Post, clickable: (Post) -> Unit) {
-    SubcomposeAsyncImage(model = post.sampleUrl,
-        contentScale = ContentScale.FillWidth,
-        contentDescription = null,
-        loading = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-            ) {
-                CircularProgressIndicator(
+    Card {
+        SubcomposeAsyncImage(model = post.sampleUrl,
+            contentScale = ContentScale.FillWidth,
+            contentDescription = null,
+            loading = {
+                Box(
                     modifier = Modifier
-                        .size(50.dp)
-                        .align(Alignment.Center)
-                )
-            }
-        },
-        success = {
-            SubcomposeAsyncImageContent()
-        },
-        modifier = Modifier
-            .clip(RoundedCornerShape(5.dp))
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .clickable { clickable.invoke(post) })
+                        .fillMaxWidth()
+                        .height(300.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            },
+            success = {
+                SubcomposeAsyncImageContent()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .clickable { clickable.invoke(post) })
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
