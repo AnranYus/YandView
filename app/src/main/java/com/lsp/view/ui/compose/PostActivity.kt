@@ -37,6 +37,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -86,11 +87,11 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import com.lsp.view.R
 import com.lsp.view.common.Config
+import com.lsp.view.common.share
 import com.lsp.view.service.DownloadService
 import com.lsp.view.ui.compose.widget.SearchBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -427,6 +428,13 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                             painter = painterResource(id = R.drawable.ic_twotone_arrow_downward_24),
                             contentDescription = "Download"
                         )
+                    }
+                    IconButton(onClick = {
+                        uiState.selectPost?.let {
+                            share(it.sampleUrl,context)
+                        }
+                    }) {
+                        androidx.compose.material.Icon(imageVector = Icons.Default.Share, contentDescription = "Share", tint = Color.White)
                     }
                 },
             )
