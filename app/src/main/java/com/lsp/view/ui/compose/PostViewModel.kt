@@ -34,9 +34,9 @@ class PostViewModel:ViewModel() {
         downloadAction.postValue(Unit)
     }
 
-    fun fetchPost(searchTarget: String = _uiState.value.searchTarget,refresh:Boolean = false){
+    fun fetchPost(searchTarget: String = _uiState.value.searchTarget.value,refresh:Boolean = false){
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value.searchTarget = searchTarget
+            _uiState.value.searchTarget.value = searchTarget
             try {
                 val data = repository.fetchPostData(
                     searchTarget,

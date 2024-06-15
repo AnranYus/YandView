@@ -37,15 +37,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -74,6 +78,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "Compose_PostActivity"
 
@@ -147,13 +152,14 @@ fun App(viewModel: PostViewModel = viewModel()) {
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PostListScreen(
     navController: NavController, onNavigateToDetail: (Post) -> Unit, viewModel: PostViewModel
 ) {
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
+    val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo }.map { layoutInfo ->
@@ -166,13 +172,17 @@ fun PostListScreen(
             }
     }
 
-    val uiState by viewModel.uiState.collectAsState()
-    Column {
+    val scope = rememberCoroutineScope()
+    Scaffold(topBar = {
         Row(modifier = Modifier.padding(vertical = 12.dp)) {
-            SearchBar(uiState.searchTarget) {
+            SearchBar(uiState.searchTarget.value) {
                 viewModel.fetchPost(it, refresh = true)
+                scope.launch {
+                    listState.animateScrollToItem(index = 0)
+                }
             }
         }
+    }, containerColor = Color.Transparent) {
         Row {
             LazyVerticalStaggeredGrid(
                 state = listState,
@@ -191,14 +201,12 @@ fun PostListScreen(
 
                     }
                 },
-                modifier = Modifier.background(Color.Transparent)
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .padding(top = it.calculateTopPadding())
             )
         }
-
     }
-
-
-
 }
 
 @Composable
