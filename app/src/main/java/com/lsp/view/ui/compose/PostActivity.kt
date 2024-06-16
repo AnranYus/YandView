@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -221,27 +222,26 @@ fun PostListScreen(
 
     LaunchedEffect(listState) {
 
-        snapshotFlow { listState.layoutInfo }.also{
-            it.collect{
-                if (lastScrollOffset<listState.firstVisibleItemScrollOffset && lastScrollPosition < listState.firstVisibleItemIndex){
-                    scrollDirectionState = -1
-                }
-                if (lastScrollOffset > listState.firstVisibleItemScrollOffset && lastScrollPosition > listState.firstVisibleItemIndex){
-                    scrollDirectionState = 1
-                }
-                lastScrollOffset = listState.firstVisibleItemScrollOffset
-                lastScrollPosition = listState.firstVisibleItemIndex
+        snapshotFlow { listState.layoutInfo }.map { layoutInfo ->
+            if (lastScrollOffset < listState.firstVisibleItemScrollOffset && lastScrollPosition < listState.firstVisibleItemIndex) {
+                scrollDirectionState = -1
             }
-        }.map { layoutInfo ->
-                layoutInfo.visibleItemsInfo.lastOrNull()?.index == postList.lastIndex
-            }.distinctUntilChanged().collect { reachedEnd ->
-                //避免初次加载数据时，list未绘制导致被判断为到达底部
-                if (reachedEnd && listState.firstVisibleItemIndex != 0) {
-                    withContext(Dispatchers.IO){
-                        viewModel.fetchPost()
-                    }
+            if (lastScrollOffset > listState.firstVisibleItemScrollOffset && lastScrollPosition > listState.firstVisibleItemIndex) {
+                scrollDirectionState = 1
+            }
+            lastScrollOffset = listState.firstVisibleItemScrollOffset
+            lastScrollPosition = listState.firstVisibleItemIndex
+
+            layoutInfo.visibleItemsInfo.lastOrNull()?.index == postList.lastIndex
+        }.distinctUntilChanged().collect { reachedEnd ->
+            Log.d(TAG, reachedEnd.toString())
+            //避免初次加载数据时，list未绘制导致被判断为到达底部
+            if (reachedEnd && listState.firstVisibleItemIndex != 0) {
+                withContext(Dispatchers.IO) {
+                    viewModel.fetchPost()
                 }
             }
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -280,7 +280,7 @@ fun PostListScreen(
         PullRefreshIndicator(refreshing, pullRefreshState,
             Modifier
                 .align(Alignment.TopCenter)
-                .padding(searchBarHeightSize+searchBarPadding))
+                .padding(searchBarHeightSize + searchBarPadding))
 
         AnimatedVisibility(
             visible = scrollDirectionState != -1,
