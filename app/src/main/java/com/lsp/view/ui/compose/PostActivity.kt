@@ -274,6 +274,7 @@ fun PostListScreen(
             modifier = Modifier
                 .background(Color.Transparent)
                 .pullRefresh(pullRefreshState)
+                .padding(horizontal = 4.dp)
 
         )
 
