@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -145,10 +146,8 @@ fun PostListScreen(
             verticalItemSpacing = 4.dp,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             content = {
-                //放置两个item将下面的内容顶下来
-                items(count = 2, key = {
-                    Random.nextInt()
-                }) {
+                //空置一行显示search bar
+                item(key = 0,span = StaggeredGridItemSpan.FullLine){
                     Box(modifier = Modifier
                         .height(searchBarHeightSize + searchBarPadding)
                         .fillMaxWidth())
