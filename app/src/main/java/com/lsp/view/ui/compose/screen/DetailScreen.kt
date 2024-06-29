@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.lsp.view.R
+import com.lsp.view.common.setWallpaper
 import com.lsp.view.common.share
 import com.lsp.view.ui.compose.PostViewModel
 
@@ -82,7 +83,7 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                 actions = {
                     IconButton(onClick = {
                         viewModel.actionDownload()
-                        Toast.makeText(context,"Start download", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Start download", Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_arrow_downward_24),
@@ -91,10 +92,25 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                     }
                     IconButton(onClick = {
                         uiState.selectPost?.let {
-                            share(it.sampleUrl,context)
+                            share(it.sampleUrl, context)
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Share, contentDescription = "Share", tint = Color.White)
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(onClick = {
+                        uiState.selectPost?.let {
+                            setWallpaper(it.sampleUrl, context)
+                        }
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_twotone_wallpaper_24),
+                            contentDescription = "Use to wallpaper",
+                            tint = Color.White
+                        )
                     }
                 },
             )
