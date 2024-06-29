@@ -8,6 +8,8 @@
     <string name="item_search">Search</string>
     <string name="description_download">Download</string>
     <string name="description_share">Share</string>
+    <string name="description_use_to_wallpaper">Use to wallpaper</string>
+    <string name="description_back">Back</string>
     <string name="activity_login_login">Login</string>
     <string name="activity_login_account">Account</string>
     <string name="activity_login_password">Password</string>

@@ -1,6 +1,5 @@
 package com.lsp.view.ui.compose.screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -64,7 +63,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 @OptIn(
     ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
@@ -72,7 +70,7 @@ import kotlin.random.Random
 )
 @Composable
 fun PostListScreen(
-    navController: NavController, onNavigateToDetail: (Post) -> Unit, viewModel: PostViewModel
+    navController: NavController, viewModel: PostViewModel
 ) {
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
@@ -147,10 +145,12 @@ fun PostListScreen(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             content = {
                 //空置一行显示search bar
-                item(key = 0,span = StaggeredGridItemSpan.FullLine){
-                    Box(modifier = Modifier
-                        .height(searchBarHeightSize + searchBarPadding)
-                        .fillMaxWidth())
+                item(key = 0, span = StaggeredGridItemSpan.FullLine) {
+                    Box(
+                        modifier = Modifier
+                            .height(searchBarHeightSize + searchBarPadding)
+                            .fillMaxWidth()
+                    )
                 }
 
                 items(items = postList, key = {
@@ -172,10 +172,12 @@ fun PostListScreen(
 
         )
 
-        PullRefreshIndicator(refreshing, pullRefreshState,
+        PullRefreshIndicator(
+            refreshing, pullRefreshState,
             Modifier
                 .align(Alignment.TopCenter)
-                .padding(searchBarHeightSize + searchBarPadding))
+                .padding(searchBarHeightSize + searchBarPadding)
+        )
 
         AnimatedVisibility(
             visible = scrollDirectionState != -1,
@@ -213,16 +215,26 @@ fun PostListScreen(
             )
         }
 
-        if (showBottomSheet){
+        if (showBottomSheet) {
             var safeModel by remember {
                 mutableStateOf(Config.getSafeMode())
             }
-            ModalBottomSheet(onDismissRequest ={showBottomSheet = false}, modifier = Modifier.height(400.dp)){
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Safe mode", modifier = Modifier.wrapContentSize(), style = MaterialTheme.typography.bodyLarge)
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                modifier = Modifier.height(400.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Safe mode",
+                        modifier = Modifier.wrapContentSize(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     Switch(checked = safeModel, onCheckedChange = {
                         safeModel = it
                         Config.setSafeMode(it)

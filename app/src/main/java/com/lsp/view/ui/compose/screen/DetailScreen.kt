@@ -77,17 +77,17 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back")
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = R.string.description_back.toString())
                     }
                 },
                 actions = {
                     IconButton(onClick = {
                         viewModel.actionDownload()
-                        Toast.makeText(context, "Start download", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, R.string.toast_download_start, Toast.LENGTH_SHORT).show()
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_arrow_downward_24),
-                            contentDescription = "Download"
+                            contentDescription = R.string.description_download.toString()
                         )
                     }
                     IconButton(onClick = {
@@ -97,7 +97,7 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                     }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Share",
+                            contentDescription = R.string.description_share.toString(),
                             tint = Color.White
                         )
                     }
@@ -108,7 +108,7 @@ fun DetailScreen(navController: NavController, viewModel: PostViewModel) {
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_wallpaper_24),
-                            contentDescription = "Use to wallpaper",
+                            contentDescription = R.string.description_use_to_wallpaper.toString(),
                             tint = Color.White
                         )
                     }

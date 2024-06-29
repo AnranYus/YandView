@@ -7,6 +7,8 @@
     <string name="item_search">搜索</string>
     <string name="description_download">下载</string>
     <string name="description_share">分享</string>
+    <string name="description_use_to_wallpaper">用作壁纸</string>
+    <string name="description_back">返回</string>
     <string name="activity_login_login">登录</string>
     <string name="activity_login_account">账户</string>
     <string name="activity_login_password">密码</string>

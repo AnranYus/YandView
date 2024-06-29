@@ -85,8 +85,7 @@ fun App(viewModel: PostViewModel = viewModel()) {
 
     NavHost(navController, startDestination = NAV_ROUTE_POSTLIST_SCREEN) {
         composable(NAV_ROUTE_POSTLIST_SCREEN) {
-            PostListScreen(onNavigateToDetail = {
-            }, navController = navController, viewModel = viewModel)
+            PostListScreen(navController = navController, viewModel = viewModel)
         }
 
         composable(NAV_ROUTE_DETAIL_SCREEN) {
