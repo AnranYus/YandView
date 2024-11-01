@@ -115,14 +115,18 @@ fun PostListScreen(
 
 
     LaunchedEffect(listState) {
-
+        val scrollThreshold = 10
         snapshotFlow { listState.layoutInfo }.map { layoutInfo ->
-            if (lastScrollOffset < listState.firstVisibleItemScrollOffset && lastScrollPosition < listState.firstVisibleItemIndex) {
+            val offsetDifference = listState.firstVisibleItemScrollOffset - lastScrollOffset
+            val positionDifference = listState.firstVisibleItemIndex - lastScrollPosition
+            if (offsetDifference > scrollThreshold || positionDifference > 0) {
+                // 向上滚动
                 scrollDirectionState = -1
-            }
-            if (lastScrollOffset > listState.firstVisibleItemScrollOffset && lastScrollPosition > listState.firstVisibleItemIndex) {
+            } else if (offsetDifference < -scrollThreshold || positionDifference < 0) {
+                // 向下滚动
                 scrollDirectionState = 1
             }
+
             lastScrollOffset = listState.firstVisibleItemScrollOffset
             lastScrollPosition = listState.firstVisibleItemIndex
 
