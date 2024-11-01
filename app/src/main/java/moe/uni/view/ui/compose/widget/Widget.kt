@@ -2,12 +2,14 @@ package moe.uni.view.ui.compose.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,6 +21,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +36,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import moe.uni.view.common.Config
 
 
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    searchTarget: String = "",
     searchEvent: (String) -> Unit,
     menuButtonAction: () -> Unit
 ) {
@@ -63,7 +67,7 @@ fun SearchBar(
                     }
             )
 
-            var input: String by remember { mutableStateOf(searchTarget) }
+            var input: String by remember { mutableStateOf("") }
             val keyboardController = LocalSoftwareKeyboardController.current
             val forceManager = LocalFocusManager.current
             BasicTextField(
@@ -97,6 +101,28 @@ fun SearchBar(
                     .width(30.dp)
             )
 
+        }
+    }
+}
+
+@Composable
+fun SettingItem(item:SettingType<*>){
+    when(item){
+        is SettingType.Switch -> {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Safe mode",
+                    modifier = Modifier.wrapContentSize(),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Switch(checked = item.value, onCheckedChange = item.onValueChanged)
+            }
         }
     }
 }

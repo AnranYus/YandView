@@ -1,5 +1,6 @@
 package moe.uni.view.ui.compose.screen
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -50,12 +51,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import moe.uni.view.bean.Post
 import moe.uni.view.common.Config
-import moe.uni.view.ui.compose.NAV_ROUTE_DETAIL_SCREEN
 import moe.uni.view.ui.compose.PostViewModel
 import moe.uni.view.ui.compose.widget.SearchBar
 import kotlinx.coroutines.Dispatchers
@@ -63,18 +62,18 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import moe.uni.view.ui.compose.DetailActivity
+import moe.uni.view.ui.compose.widget.SettingItem
+import moe.uni.view.ui.compose.widget.SettingType
 
 @OptIn(
     ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class,
     ExperimentalMaterialApi::class
 )
 @Composable
-fun PostListScreen(
-    navController: NavController, viewModel: PostViewModel
-) {
+fun PostListScreen(context: Context, viewModel: PostViewModel) {
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
-    val uiState by viewModel.uiState.collectAsState()
     var lastScrollOffset by remember {
         mutableIntStateOf(0)
     }
@@ -103,13 +102,11 @@ fun PostListScreen(
 
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    val refreshing by remember {
-        uiState.refresh
-    }
+    var refreshing by remember { mutableStateOf(true) }
 
     val pullRefreshState = rememberPullRefreshState(refreshing = refreshing, onRefresh = {
         scope.launch(Dispatchers.IO) {
-            viewModel.fetchPost(refresh = true)
+            viewModel.refresh()
         }
     })
 
@@ -134,11 +131,13 @@ fun PostListScreen(
         }.distinctUntilChanged().collect { reachedEnd ->
             //避免初次加载数据时，list未绘制导致被判断为到达底部
             if (reachedEnd && listState.firstVisibleItemIndex != 0) {
-                withContext(Dispatchers.IO) {
-                    viewModel.fetchPost()
-                }
+                viewModel.loadData()
             }
         }
+    }
+
+    LaunchedEffect(postList) {
+        refreshing = false
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -157,13 +156,12 @@ fun PostListScreen(
                     )
                 }
 
-                items(items = postList, key = {
+                items(items = postList.distinctBy { it.postId }, key = {
                     it.postId//提供key以保持列表顺序稳定
                 }) {
                     Row(Modifier.animateItemPlacement(tween(durationMillis = 250))) {
                         PostItem(it, clickable = {
-                            viewModel.uiState.value.selectPost = it
-                            navController.navigate(NAV_ROUTE_DETAIL_SCREEN)
+                            DetailActivity.start(context,it)
                         })
                     }
 
@@ -207,10 +205,9 @@ fun PostListScreen(
                             it.size.height.toDp()
                         }
                     },
-                searchTarget = uiState.searchTarget.value,
                 searchEvent = {
                     scope.launch(Dispatchers.IO) {
-                        viewModel.fetchPost(it, refresh = true)
+                        viewModel.search(it)
                         listState.animateScrollToItem(index = 0)
                     }
                 }, menuButtonAction = {
@@ -220,38 +217,33 @@ fun PostListScreen(
         }
 
         if (showBottomSheet) {
-            var safeModel by remember {
-                mutableStateOf(Config.getSafeMode())
-            }
-            ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
-                modifier = Modifier.height(400.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "Safe mode",
-                        modifier = Modifier.wrapContentSize(),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Switch(checked = safeModel, onCheckedChange = {
-                        safeModel = it
-                        Config.setSafeMode(it)
-                    })
-                }
-                MaterialTheme.shapes.large
-            }
-
+            Setting(onDismissRequest = {showBottomSheet = false}, onSettingChanged = {
+                refreshing = true
+                viewModel.refresh()
+            })
         }
-
     }
+}
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Setting(onDismissRequest:() -> Unit,onSettingChanged:() -> Unit){
+    var safeModel by remember {
+        mutableStateOf(Config.getSafeMode())
+    }
+    ModalBottomSheet(
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.height(400.dp)
+    ) {
+        SettingItem(SettingType.Switch(
+            "Safe mode", safeModel
+        ) {
+            safeModel = it
+            Config.setSafeMode(it)
+            onSettingChanged.invoke()
+        })
+        MaterialTheme.shapes.large
+    }
 }
 
 @Composable

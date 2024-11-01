@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ui.compose.DetailActivity" android:exported="true"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="moe.uni.view.fileprovider"
