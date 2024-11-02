@@ -2,8 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
-    id "com.google.devtools.ksp"
-
+    id 'org.jetbrains.kotlin.plugin.compose'
 }
 
 android {
@@ -71,12 +70,6 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
     implementation("io.coil-kt:coil-compose:2.6.0")
-
-    def room_version = "2.6.1"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
     implementation ('com.squareup.retrofit2:retrofit:2.9.0')
