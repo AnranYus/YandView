@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -74,10 +75,7 @@ import moe.uni.view.ui.compose.widget.SettingType
 fun PostListScreen(context: Context, viewModel: PostViewModel) {
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
-    var lastScrollOffset by remember {
-        mutableIntStateOf(0)
-    }
-    var lastScrollPosition by remember {
+    var lastVisibleIndex by remember {
         mutableIntStateOf(0)
     }
 
@@ -102,9 +100,9 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
 
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    var refreshing by remember { mutableStateOf(true) }
+    var refreshing = viewModel.loading.collectAsState()
 
-    val pullRefreshState = rememberPullRefreshState(refreshing = refreshing, onRefresh = {
+    val pullRefreshState = rememberPullRefreshState(refreshing = refreshing.value, onRefresh = {
         scope.launch(Dispatchers.IO) {
             viewModel.refresh()
         }
@@ -112,20 +110,15 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
 
 
     LaunchedEffect(listState) {
-        val scrollThreshold = 10
         snapshotFlow { listState.layoutInfo }.map { layoutInfo ->
-            val offsetDifference = listState.firstVisibleItemScrollOffset - lastScrollOffset
-            val positionDifference = listState.firstVisibleItemIndex - lastScrollPosition
-            if (offsetDifference > scrollThreshold || positionDifference > 0) {
+            if (listState.firstVisibleItemIndex > lastVisibleIndex) {
                 // 向上滚动
                 scrollDirectionState = -1
-            } else if (offsetDifference < -scrollThreshold || positionDifference < 0) {
+            } else if (listState.firstVisibleItemIndex < lastVisibleIndex) {
                 // 向下滚动
                 scrollDirectionState = 1
             }
-
-            lastScrollOffset = listState.firstVisibleItemScrollOffset
-            lastScrollPosition = listState.firstVisibleItemIndex
+            lastVisibleIndex = listState.firstVisibleItemIndex
 
             layoutInfo.visibleItemsInfo.lastOrNull()?.index == postList.lastIndex
         }.distinctUntilChanged().collect { reachedEnd ->
@@ -134,10 +127,6 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
                 viewModel.loadData()
             }
         }
-    }
-
-    LaunchedEffect(postList) {
-        refreshing = false
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -175,7 +164,7 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
         )
 
         PullRefreshIndicator(
-            refreshing, pullRefreshState,
+            refreshing.value, pullRefreshState,
             Modifier
                 .align(Alignment.TopCenter)
                 .padding(searchBarHeightSize + searchBarPadding)
@@ -218,7 +207,6 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
 
         if (showBottomSheet) {
             Setting(onDismissRequest = {showBottomSheet = false}, onSettingChanged = {
-                refreshing = true
                 viewModel.refresh()
             })
         }
