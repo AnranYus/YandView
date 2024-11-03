@@ -7,11 +7,14 @@ import moe.uni.view.repository.exception.NetworkErrorException
 import moe.uni.view.repository.network.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PostViewModel:ViewModel() {
     val postData:MutableStateFlow<List<YandPost>> = MutableStateFlow(arrayListOf())
     private var searchKeyword:String = ""
+    private val _loading = MutableStateFlow(false)
+    val loading = _loading.asStateFlow()
     private val repository by lazy {
         PostRepository()
     }
@@ -48,6 +51,7 @@ class PostViewModel:ViewModel() {
 
     private suspend fun fetchPost(keyword:String,refresh:Boolean){
         try {
+            _loading.value = true
             if (refresh){
                 nowPage = 1
             }
@@ -61,6 +65,7 @@ class PostViewModel:ViewModel() {
                 postData.value + data
             }
             nowPage ++
+            _loading.value = false
         } catch (e: NetworkErrorException) {
             //todo network error
         }
