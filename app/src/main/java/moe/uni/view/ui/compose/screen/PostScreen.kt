@@ -72,7 +72,7 @@ import moe.uni.view.ui.compose.widget.SettingType
     ExperimentalMaterialApi::class
 )
 @Composable
-fun PostListScreen(context: Context, viewModel: PostViewModel) {
+fun PostListScreen(context: Context, viewModel: PostViewModel,modifier: Modifier) {
     val postList by viewModel.postData.collectAsState()
     val listState = rememberLazyStaggeredGridState()
     var lastVisibleIndex by remember {
@@ -129,7 +129,7 @@ fun PostListScreen(context: Context, viewModel: PostViewModel) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         LazyVerticalStaggeredGrid(
             state = listState,
             columns = StaggeredGridCells.Adaptive(200.dp),

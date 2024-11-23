@@ -14,7 +14,7 @@ class PostApiImpl :PostApi {
         val postService: PostService = ServiceCreator.create(load.source)
         val service: Call<ArrayList<YandPost>> = postService.getPostData(defaultLimit,load.tags, load.page)
 
-        return request(service, load.safe)
+        return request(service)
     }
 
 }
