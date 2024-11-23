@@ -7,14 +7,9 @@ import moe.uni.view.repository.exception.NetworkErrorException
 import retrofit2.Call
 
 interface PostApi {
-    private val TAG: String
-        get() = this::class.java.simpleName
 
-    /**
-     * @param service ArrayList接收边界为Post的泛型，若直接使用Post作为泛型参数，需要强制类型转换。
-     */
     @Throws(NetworkErrorException::class)
-    fun <T : Post> request(service: Call<ArrayList<T>>, safeMode: Boolean):ArrayList<T> {
+    fun <T> request(service: Call<ArrayList<T>>):ArrayList<T> {
 
         try {
             val execute = service.execute()
