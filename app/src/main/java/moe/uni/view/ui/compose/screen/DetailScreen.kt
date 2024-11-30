@@ -1,7 +1,5 @@
 package moe.uni.view.ui.compose.screen
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -27,18 +25,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
 import moe.uni.view.R
 import moe.uni.view.bean.Post
 import moe.uni.view.common.setWallpaper
 import moe.uni.view.common.share
 import moe.uni.view.ui.compose.DetailViewModel
-import moe.uni.view.ui.compose.PostViewModel
+import moe.uni.view.utils.DownloadUtils
+import moe.uni.view.utils.Result
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(post:Post, viewModel: DetailViewModel,onBackAction:() -> Unit) {
+fun DetailScreen(
+    post: Post,
+    viewModel: DetailViewModel,
+    onBackAction: () -> Unit,
+    onImageDownloaded: (Result) -> Unit
+) {
 
     var scale by remember { mutableFloatStateOf(1f) }
     var rotation by remember { mutableFloatStateOf(0f) }
@@ -77,13 +83,19 @@ fun DetailScreen(post:Post, viewModel: DetailViewModel,onBackAction:() -> Unit) 
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = onBackAction) {
-                        Icon(imageVector = Icons.AutoMirrored.Default.ArrowBack, contentDescription = R.string.description_back.toString())
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = R.string.description_back.toString()
+                        )
                     }
                 },
                 actions = {
                     IconButton(onClick = {
-                        viewModel.startDownload(post.fileUrl)
-                        Toast.makeText(context, R.string.toast_download_start, Toast.LENGTH_SHORT).show()
+                        val defer = DownloadUtils.downloadImage(post.fileUrl)
+                        viewModel.viewModelScope.launch {
+                            val result = defer.await()
+                            onImageDownloaded.invoke(result)
+                        }
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_arrow_downward_24),
@@ -91,7 +103,7 @@ fun DetailScreen(post:Post, viewModel: DetailViewModel,onBackAction:() -> Unit) 
                         )
                     }
                     IconButton(onClick = {
-                        share(post.sampleUrl,context)
+                        share(post.sampleUrl, context)
                     }) {
                         Icon(
                             imageVector = Icons.Default.Share,
@@ -100,7 +112,7 @@ fun DetailScreen(post:Post, viewModel: DetailViewModel,onBackAction:() -> Unit) 
                         )
                     }
                     IconButton(onClick = {
-                        setWallpaper(post.sampleUrl,context)
+                        setWallpaper(post.sampleUrl, context)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_twotone_wallpaper_24),
