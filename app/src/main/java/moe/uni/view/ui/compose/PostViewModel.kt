@@ -30,9 +30,9 @@ class PostViewModel:ViewModel() {
         }
     }
 
-    fun refresh(){
+    fun refresh(onRefreshComplete:()-> Unit = {}){
         viewModelScope.launch(Dispatchers.IO) {
-            fetchPost(searchKeyword,refresh = true)
+            fetchPost(searchKeyword,refresh = true,onRefreshComplete)
         }
     }
 
@@ -49,7 +49,7 @@ class PostViewModel:ViewModel() {
         }
     }
 
-    private suspend fun fetchPost(keyword:String,refresh:Boolean){
+    private suspend fun fetchPost(keyword:String,refresh:Boolean,onFetchComplete:()-> Unit = {}){
         try {
             _loading.value = true
             if (refresh){
@@ -66,6 +66,7 @@ class PostViewModel:ViewModel() {
             }
             nowPage ++
             _loading.value = false
+            onFetchComplete.invoke()
         } catch (e: NetworkErrorException) {
             //todo network error
         }

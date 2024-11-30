@@ -8,7 +8,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -33,8 +31,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -54,16 +50,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
-import moe.uni.view.bean.Post
-import moe.uni.view.common.Config
-import moe.uni.view.ui.compose.PostViewModel
-import moe.uni.view.ui.compose.widget.SearchBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import moe.uni.view.bean.Post
+import moe.uni.view.common.Config
 import moe.uni.view.ui.compose.DetailActivity
+import moe.uni.view.ui.compose.PostViewModel
+import moe.uni.view.ui.compose.widget.SearchBar
 import moe.uni.view.ui.compose.widget.SettingItem
 import moe.uni.view.ui.compose.widget.SettingType
 
@@ -78,6 +73,8 @@ fun PostListScreen(context: Context, viewModel: PostViewModel,modifier: Modifier
     var lastVisibleIndex by remember {
         mutableIntStateOf(0)
     }
+    val coroutineScope = rememberCoroutineScope()
+
 
     /**
      * 1 scroll up
@@ -207,7 +204,12 @@ fun PostListScreen(context: Context, viewModel: PostViewModel,modifier: Modifier
 
         if (showBottomSheet) {
             Setting(onDismissRequest = {showBottomSheet = false}, onSettingChanged = {
-                viewModel.refresh()
+                viewModel.refresh{
+                    coroutineScope.launch(Dispatchers.Main){
+                        listState.animateScrollToItem(0)
+
+                    }
+                }
             })
         }
     }
