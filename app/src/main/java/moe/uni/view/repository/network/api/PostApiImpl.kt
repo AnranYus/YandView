@@ -8,7 +8,6 @@ import retrofit2.Call
 import kotlin.collections.ArrayList
 
 class PostApiImpl :PostApi {
-    private val TAG = this::class.java.simpleName
     private val defaultLimit = "100"
     override suspend fun fetchNewPost(load: Load):ArrayList<YandPost>{
         val postService: PostService = ServiceCreator.create(load.source)
