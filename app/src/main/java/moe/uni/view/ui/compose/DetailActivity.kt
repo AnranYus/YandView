@@ -44,7 +44,7 @@ class DetailActivity: ComponentActivity() {
                         modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                     ) {
                         DetailScreen(post = it, viewModel = viewModel, onBackAction = {onBackPressedDispatcher.onBackPressed()}, onImageDownloaded = {
-                            Toast.makeText(this,it.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this,it.exception?.message, Toast.LENGTH_SHORT).show()
                         })
                     }
                 }

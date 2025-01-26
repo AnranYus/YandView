@@ -8,10 +8,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import moe.uni.view.YandViewApplication
+import moe.uni.view.repository.exception.NetworkErrorException
 import moe.uni.view.repository.network.retrofit.ServiceCreator
 import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
+import java.net.UnknownHostException
 
 object DownloadUtils {
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -23,17 +25,14 @@ object DownloadUtils {
             val split = fileUrl.split("/")
             val fileName = split[split.size - 1]
             val file = obtainImageFile(fileName)
-            if (file.exists()) {
-                return@async Result.failure("File exists")
-            }
             FileOutputStream(file).use {
                 val request = Request.Builder()
                     .url(fileUrl)
                     .build()
-                val response = ServiceCreator.CLIENT.newCall(request).execute()
-                val responseData = response.body?.bytes()
-                return@async if (response.code == 200) {
-                    try {
+                try {
+                    val response = ServiceCreator.CLIENT.newCall(request).execute()
+                    val responseData = response.body?.bytes()
+                    return@async if (response.code == 200) {
                         it.write(responseData)
                         //通知媒体更新
                         MediaScannerConnection.scanFile(
@@ -41,17 +40,19 @@ object DownloadUtils {
                             null, null
                         )
                         Result.success("File download successfully")
-                    } catch (e: Exception) {
-                        file.delete()
-                        Result.failure(exception = e)
+                    } else {
+                        throw NetworkErrorException("Download code error")
                     }
-
-                } else {
+                }catch (e: Exception){
                     file.delete()
-                    Result.failure("Connection timed out")
+                    if (e is UnknownHostException){
+                        Result.failure("Network error")
+                    }else{
+                        Result.failure(exception = e)
+
+                    }
                 }
             }
-            return@async Result.failure(message = "Unknown error")
         }
     }
 
@@ -59,12 +60,11 @@ object DownloadUtils {
 
 fun obtainImageFile(fileName: String): File {
     val dir = File(DownloadUtils.IMAGE_PATH)
-    if (dir.exists()) {
-        return File(DownloadUtils.IMAGE_PATH + fileName)
-    } else {
+    if (!dir.exists()) {
         dir.mkdirs()
-        return File(DownloadUtils.IMAGE_PATH + fileName)
     }
+    return File(DownloadUtils.IMAGE_PATH + fileName)
+
 }
 
 class Result(val success: Boolean, val message: String, val exception: Exception?) {
